@@ -53,11 +53,15 @@ impl Parser {
     pub fn arg1(self) -> String {
         return match self.command_type() {
             CommandType::ARITHMETIC => { self.command }
-            CommandType::PUSH => { self.command.split_whitespace()[1] }
+            CommandType::PUSH => {
+                let commands: Vec<&str> = self.command.split_whitespace().collect();
+                commands[1].to_string()
+            }
         }
     }
 
     pub fn arg2(self) -> String {
-        self.command.split_whitespace()[2]
+        let commands: Vec<&str> = self.command.split_whitespace().collect();
+        commands[2].to_string()
     }
 }
