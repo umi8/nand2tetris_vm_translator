@@ -17,6 +17,13 @@ impl CodeWriter {
         self.stack_pointer -= 1;
         format!("@{}\nD=M\n@{}\nM=M+D", second, first)
     }
+
+    fn sub(&mut self) -> String {
+        let first = self.stack_pointer - 2;
+        let second = self.stack_pointer - 1;
+        self.stack_pointer -= 1;
+        format!("@{}\nD=M\n@{}\nM=M-D", second, first)
+    }
 }
 
 #[cfg(test)]
@@ -27,6 +34,13 @@ mod tests {
     fn can_add() {
         let mut code_writer = CodeWriter { stack_pointer: 258 };
         assert_eq!(code_writer.add(), "@257\nD=M\n@256\nM=M+D");
+        assert_eq!(code_writer.stack_pointer, 257)
+    }
+
+    #[test]
+    fn can_sub() {
+        let mut code_writer = CodeWriter { stack_pointer: 258 };
+        assert_eq!(code_writer.sub(), "@257\nD=M\n@256\nM=M-D");
         assert_eq!(code_writer.stack_pointer, 257)
     }
 }
