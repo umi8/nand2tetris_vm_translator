@@ -1,6 +1,8 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+use regex::Regex;
+
 use crate::command_type::CommandType;
 
 pub struct Parser {
