@@ -1,6 +1,7 @@
 use std::fs::File;
+use std::io::Write;
 
-use crate::CommandType;
+use crate::{arithmetic_writer, CommandType};
 
 pub struct CodeWriter {
     file: File,
@@ -22,11 +23,15 @@ impl CodeWriter {
         }
     }
 
-    pub fn write_arithmetic(&self, command: &str) {
-        println!("{}", command)
+    pub fn write_arithmetic(&mut self, command: &str) -> std::io::Result<()> {
+        writeln!(&mut self.file, "{}", arithmetic_writer::add(self.stack_pointer))?;
+        self.stack_pointer -= 1;
+        Ok(())
     }
 
-    pub fn write_push_pop(&self, command: CommandType, segment: &str, index: &i32) {
-        println!("{},{}", segment, index);
+    pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
+        writeln!(&mut self.file, "@{}\nD=A\n@{}\nM=D", index, self.stack_pointer)?;
+        self.stack_pointer += 1;
+        Ok(())
     }
 }
