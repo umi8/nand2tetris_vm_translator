@@ -8,7 +8,7 @@ pub struct CodeWriter {
 
 impl CodeWriter {
     pub fn new(file_path: &str) -> Result<Self, &'static str> {
-        let out = File::open(file_path);
+        let out = File::create(file_path);
 
         match out {
             Ok(file) => {
