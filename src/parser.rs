@@ -47,7 +47,8 @@ impl Parser {
     }
 
     pub fn command_type(&self) -> CommandType {
-        CommandType::from(&self.command)
+        let commands: Vec<&str> = self.command.split_whitespace().collect();
+        CommandType::from(commands[0])
     }
 
     pub fn arg1(&self) -> &str {
