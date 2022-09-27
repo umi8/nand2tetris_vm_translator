@@ -26,12 +26,19 @@ impl CodeWriter {
     pub fn write_arithmetic(&mut self, command: &str) -> std::io::Result<()> {
         writeln!(&mut self.file, "{}", arithmetic_writer::add(self.stack_pointer))?;
         self.stack_pointer -= 1;
+        self.write_stack_pointer()?;
         Ok(())
     }
 
     pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
         writeln!(&mut self.file, "@{}\nD=A\n@{}\nM=D", index, self.stack_pointer)?;
         self.stack_pointer += 1;
+        self.write_stack_pointer()?;
+        Ok(())
+    }
+
+    fn write_stack_pointer(&mut self) -> std::io::Result<()> {
+        writeln!(&mut self.file, "@{}\nD=A\n@0\nM=D", self.stack_pointer)?;
         Ok(())
     }
 }
