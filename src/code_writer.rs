@@ -1,5 +1,6 @@
 use std::fs::File;
-use std::io::BufReader;
+
+use crate::CommandType;
 
 pub struct CodeWriter {
     file: File,
@@ -21,8 +22,11 @@ impl CodeWriter {
         }
     }
 
-    pub fn write_arithmetic(command: &str) {}
+    pub fn write_arithmetic(&self, command: &str) {
+        println!("{}", command)
+    }
 
-    pub fn write_push_pop(command: &str, segment: &str, index: i32) {}
-
+    pub fn write_push_pop(&self, command: CommandType, segment: &str, index: &i32) {
+        println!("{},{}", segment, index);
+    }
 }
