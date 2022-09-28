@@ -1,24 +1,5 @@
-pub fn add(stack_pointer: i32) -> String {
-    let first = stack_pointer - 2;
-    let second = stack_pointer - 1;
-    format!("@{}\nD=M\n@{}\nM=M+D", second, first)
-}
-
-pub fn sub(stack_pointer: i32) -> String {
-    let first = stack_pointer - 2;
-    let second = stack_pointer - 1;
-    format!("@{}\nD=M\n@{}\nM=M-D", second, first)
-}
-
-pub fn neg(stack_pointer: i32) -> String {
-    let target = stack_pointer - 1;
-    format!("@{}\nM=!M", target)
-}
-
-pub fn eq(stack_pointer: i32) -> String {
-    let x = stack_pointer - 2;
-    let y = stack_pointer - 1;
-    format!("@{}\nD=M\n@{}\nM=M&D", y, x)
+pub fn add() -> String {
+    format!("@257\nD=M\n@256\nM=M+D")
 }
 
 #[cfg(test)]
@@ -27,21 +8,6 @@ mod tests {
 
     #[test]
     fn can_add() {
-        assert_eq!(add(258), "@257\nD=M\n@256\nM=M+D");
-    }
-
-    #[test]
-    fn can_sub() {
-        assert_eq!(sub(258), "@257\nD=M\n@256\nM=M-D");
-    }
-
-    #[test]
-    fn can_neg() {
-        assert_eq!(neg(257), "@256\nM=!M");
-    }
-
-    #[test]
-    fn can_eq() {
-        assert_eq!(eq(258), "@257\nD=M\n@256\nM=M&D")
+        assert_eq!(add(), "@257\nD=M\n@256\nM=M+D");
     }
 }
