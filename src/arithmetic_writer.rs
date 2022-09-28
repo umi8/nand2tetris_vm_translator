@@ -15,6 +15,12 @@ pub fn neg(stack_pointer: i32) -> String {
     format!("@{}\nM=!M", target)
 }
 
+pub fn eq(stack_pointer: i32) -> String {
+    let x = stack_pointer - 2;
+    let y = stack_pointer - 1;
+    format!("@{}\nD=M\n@{}\nM=M&D", y, x)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::arithmetic_writer::*;
@@ -32,5 +38,10 @@ mod tests {
     #[test]
     fn can_neg() {
         assert_eq!(neg(257), "@256\nM=!M");
+    }
+
+    #[test]
+    fn can_eq() {
+        assert_eq!(eq(258), "@257\nD=M\n@256\nM=M&D")
     }
 }
