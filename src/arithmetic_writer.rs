@@ -1,16 +1,16 @@
-pub(crate) fn add(stack_pointer: i32) -> String {
+pub fn add(stack_pointer: i32) -> String {
     let first = stack_pointer - 2;
     let second = stack_pointer - 1;
     format!("@{}\nD=M\n@{}\nM=M+D", second, first)
 }
 
-fn sub(stack_pointer: i32) -> String {
+pub fn sub(stack_pointer: i32) -> String {
     let first = stack_pointer - 2;
     let second = stack_pointer - 1;
     format!("@{}\nD=M\n@{}\nM=M-D", second, first)
 }
 
-fn neg(stack_pointer: i32) -> String {
+pub fn neg(stack_pointer: i32) -> String {
     let target = stack_pointer - 1;
     format!("@{}\nM=!M", target)
 }
