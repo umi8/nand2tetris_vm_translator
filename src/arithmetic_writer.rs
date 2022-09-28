@@ -17,7 +17,7 @@ pub fn neg(stack_pointer: i32) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::arithmetic_writer::{add, neg, sub};
+    use crate::arithmetic_writer::*;
 
     #[test]
     fn can_add() {
