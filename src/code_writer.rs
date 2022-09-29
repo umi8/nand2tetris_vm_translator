@@ -52,6 +52,34 @@ impl CodeWriter {
         Ok(())
     }
 
+    fn neg(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+
+    fn eq(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+
+    fn gt(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+
+    fn lt(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+
+    fn and(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+
+    fn or(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+
+    fn not(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+
     pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
         self.push(index);
         Ok(())
