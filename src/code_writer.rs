@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::Write;
 
-use crate::{arithmetic_writer, CommandType};
+use crate::CommandType;
 
 pub struct CodeWriter {
     file: File,

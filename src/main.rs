@@ -5,7 +5,6 @@ use crate::parser::Parser;
 mod command_type;
 mod code_writer;
 mod parser;
-mod arithmetic_writer;
 
 fn main() -> std::io::Result<()> {
     let mut parser = match Parser::new("File.vm") {
