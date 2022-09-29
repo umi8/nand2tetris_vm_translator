@@ -38,6 +38,20 @@ impl CodeWriter {
         Ok(())
     }
 
+    fn sub(&mut self) -> std::io::Result<()> {
+        self.decrement_stack_pointer();
+        self.set_memory_address_to_stack_pointer();
+        // store top of stack value in D register
+        writeln!(&mut self.file, "D=M")?;
+
+        self.decrement_stack_pointer();
+        self.set_memory_address_to_stack_pointer();
+        // store the result of sub calc in A register
+        writeln!(&mut self.file, "M=M-D")?;
+        self.increment_stack_pointer();
+        Ok(())
+    }
+
     pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
         self.push(index);
         Ok(())
