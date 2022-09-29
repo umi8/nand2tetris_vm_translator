@@ -20,30 +20,34 @@ impl CodeWriter {
     }
 
     pub fn write_arithmetic(&mut self, command: &str) -> std::io::Result<()> {
-        // decrement sp
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M-1")?;
+        self.add();
+        Ok(())
+    }
+
+    fn add(&mut self) -> std::io::Result<()> {
+        self.decrement_stack_pointer();
         // set sp address in A register
         writeln!(&mut self.file, "@SP")?;
         writeln!(&mut self.file, "A=M")?;
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
-        // decrement sp
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M-1")?;
+        self.decrement_stack_pointer();
         // set sp address in A register
         writeln!(&mut self.file, "@SP")?;
         writeln!(&mut self.file, "A=M")?;
         // store the result of add calc in A register
         writeln!(&mut self.file, "M=M+D")?;
-        // increment sp
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M+1")?;
+        self.increment_stack_pointer();
         Ok(())
     }
 
     pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
+        self.push(index);
+        Ok(())
+    }
+
+    fn push(&mut self, index: &i32) -> std::io::Result<()> {
         // store index in D register
         writeln!(&mut self.file, "@{}", index)?;
         writeln!(&mut self.file, "D=A")?;
@@ -52,9 +56,19 @@ impl CodeWriter {
         writeln!(&mut self.file, "A=M")?;
         // store index in stack[sp]
         writeln!(&mut self.file, "M=D")?;
-        // increment sp
+        self.increment_stack_pointer();
+        Ok(())
+    }
+
+    fn increment_stack_pointer(&mut self) -> std::io::Result<()> {
         writeln!(&mut self.file, "@SP")?;
         writeln!(&mut self.file, "M=M+1")?;
+        Ok(())
+    }
+
+    fn decrement_stack_pointer(&mut self) -> std::io::Result<()> {
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=M-1")?;
         Ok(())
     }
 }
