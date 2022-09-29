@@ -26,16 +26,12 @@ impl CodeWriter {
 
     fn add(&mut self) -> std::io::Result<()> {
         self.decrement_stack_pointer();
-        // set sp address in A register
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
+        self.set_memory_address_to_stack_pointer();
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
         self.decrement_stack_pointer();
-        // set sp address in A register
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
+        self.set_memory_address_to_stack_pointer();
         // store the result of add calc in A register
         writeln!(&mut self.file, "M=M+D")?;
         self.increment_stack_pointer();
@@ -51,12 +47,16 @@ impl CodeWriter {
         // store index in D register
         writeln!(&mut self.file, "@{}", index)?;
         writeln!(&mut self.file, "D=A")?;
-        // set sp address in A register
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
+        self.set_memory_address_to_stack_pointer();
         // store index in stack[sp]
         writeln!(&mut self.file, "M=D")?;
         self.increment_stack_pointer();
+        Ok(())
+    }
+
+    fn set_memory_address_to_stack_pointer(&mut self) -> std::io::Result<()> {
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "A=M")?;
         Ok(())
     }
 
