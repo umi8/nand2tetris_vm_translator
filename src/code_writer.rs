@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::Write;
 
+use crate::arithmetic_type::ArithmeticType;
 use crate::CommandType;
 
 pub struct CodeWriter {
@@ -20,7 +21,17 @@ impl CodeWriter {
     }
 
     pub fn write_arithmetic(&mut self, command: &str) -> std::io::Result<()> {
-        self.add();
+        match ArithmeticType::from(command).unwrap() {
+            ArithmeticType::ADD => self.add(),
+            ArithmeticType::SUB => self.sub(),
+            ArithmeticType::NEG => self.neg(),
+            ArithmeticType::EQ => self.eq(),
+            ArithmeticType::GT => self.gt(),
+            ArithmeticType::LT => self.lt(),
+            ArithmeticType::AND => self.and(),
+            ArithmeticType::OR => self.or(),
+            ArithmeticType::NOT => self.not()
+        };
         Ok(())
     }
 
