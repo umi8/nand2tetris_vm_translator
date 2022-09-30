@@ -12,18 +12,18 @@ pub enum ArithmeticType {
 }
 
 impl ArithmeticType {
-    pub fn from(command: &str) -> Option<ArithmeticType> {
+    pub fn from(command: &str) -> Result<ArithmeticType, &'static str> {
         return match command {
-            "add" => Some(ArithmeticType::ADD),
-            "sub" => Some(ArithmeticType::SUB),
-            "neg" => Some(ArithmeticType::NEG),
-            "eq" => Some(ArithmeticType::EQ),
-            "gt" => Some(ArithmeticType::GT),
-            "lt" => Some(ArithmeticType::LT),
-            "and" => Some(ArithmeticType::AND),
-            "or" => Some(ArithmeticType::OR),
-            "not" => Some(ArithmeticType::NOT),
-            &_ => None
+            "add" => Ok(ArithmeticType::ADD),
+            "sub" => Ok(ArithmeticType::SUB),
+            "neg" => Ok(ArithmeticType::NEG),
+            "eq" => Ok(ArithmeticType::EQ),
+            "gt" => Ok(ArithmeticType::GT),
+            "lt" => Ok(ArithmeticType::LT),
+            "and" => Ok(ArithmeticType::AND),
+            "or" => Ok(ArithmeticType::OR),
+            "not" => Ok(ArithmeticType::NOT),
+            &_ => Err("Not type")
         };
     }
 }
@@ -79,7 +79,7 @@ mod tests {
     }
 
     #[test]
-    fn return_none() {
-        assert_eq!(None, ArithmeticType::from("hoge"))
+    fn return_error() {
+        assert!(ArithmeticType::from("hoge").is_err())
     }
 }
