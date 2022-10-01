@@ -177,6 +177,16 @@ impl CodeWriter {
     }
 
     fn or(&mut self) -> std::io::Result<()> {
+        self.decrement_stack_pointer();
+        self.set_memory_address_to_stack_pointer();
+        // store top of stack value in D register
+        writeln!(&mut self.file, "D=M")?;
+
+        self.decrement_stack_pointer();
+        self.set_memory_address_to_stack_pointer();
+        // store the result of or operation in A register
+        writeln!(&mut self.file, "M=D|M")?;
+        self.increment_stack_pointer();
         Ok(())
     }
 
