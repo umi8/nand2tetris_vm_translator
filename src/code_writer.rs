@@ -32,55 +32,55 @@ impl CodeWriter {
             ArithmeticType::AND => self.and(),
             ArithmeticType::OR => self.or(),
             ArithmeticType::NOT => self.not()
-        };
+        }?;
         Ok(())
     }
 
     fn add(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store the result of add calc in A register
         writeln!(&mut self.file, "M=M+D")?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         Ok(())
     }
 
     fn sub(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store the result of sub calc in A register
         writeln!(&mut self.file, "M=M-D")?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         Ok(())
     }
 
     fn neg(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // reverse sign
         writeln!(&mut self.file, "M=-M")?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         Ok(())
     }
 
     fn eq(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
 
         writeln!(&mut self.file, "D=M-D")?;
         writeln!(&mut self.file, "@COMP{}", self.comparison_counter)?;
@@ -92,24 +92,24 @@ impl CodeWriter {
         writeln!(&mut self.file, "0;JMP")?;
 
         writeln!(&mut self.file, "(COMP{})", self.comparison_counter)?;
-        self.set_memory_address_to_stack_pointer();
+        self.set_memory_address_to_stack_pointer()?;
         // set true
         writeln!(&mut self.file, "M=-1")?;
 
         writeln!(&mut self.file, "(ENDCOMP{})", self.comparison_counter)?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         self.comparison_counter += 1;
         Ok(())
     }
 
     fn gt(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
 
         // D = x - y
         writeln!(&mut self.file, "D=M-D")?;
@@ -122,24 +122,24 @@ impl CodeWriter {
         writeln!(&mut self.file, "0;JMP")?;
 
         writeln!(&mut self.file, "(COMP{})", self.comparison_counter)?;
-        self.set_memory_address_to_stack_pointer();
+        self.set_memory_address_to_stack_pointer()?;
         // set true
         writeln!(&mut self.file, "M=-1")?;
 
         writeln!(&mut self.file, "(ENDCOMP{})", self.comparison_counter)?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         self.comparison_counter += 1;
         Ok(())
     }
 
     fn lt(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
 
         // D = x - y
         writeln!(&mut self.file, "D=M-D")?;
@@ -152,55 +152,55 @@ impl CodeWriter {
         writeln!(&mut self.file, "0;JMP")?;
 
         writeln!(&mut self.file, "(COMP{})", self.comparison_counter)?;
-        self.set_memory_address_to_stack_pointer();
+        self.set_memory_address_to_stack_pointer()?;
         // set true
         writeln!(&mut self.file, "M=-1")?;
 
         writeln!(&mut self.file, "(ENDCOMP{})", self.comparison_counter)?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         self.comparison_counter += 1;
         Ok(())
     }
 
     fn and(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store the result of and operation in A register
         writeln!(&mut self.file, "M=D&M")?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         Ok(())
     }
 
     fn or(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store top of stack value in D register
         writeln!(&mut self.file, "D=M")?;
 
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store the result of or operation in A register
         writeln!(&mut self.file, "M=D|M")?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         Ok(())
     }
 
     fn not(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer();
-        self.set_memory_address_to_stack_pointer();
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
         // store the result of not operation in A register
         writeln!(&mut self.file, "M=!M")?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         Ok(())
     }
 
     pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
-        self.push(index);
+        self.push(index)?;
         Ok(())
     }
 
@@ -208,10 +208,10 @@ impl CodeWriter {
         // store index in D register
         writeln!(&mut self.file, "@{}", index)?;
         writeln!(&mut self.file, "D=A")?;
-        self.set_memory_address_to_stack_pointer();
+        self.set_memory_address_to_stack_pointer()?;
         // store index in stack[sp]
         writeln!(&mut self.file, "M=D")?;
-        self.increment_stack_pointer();
+        self.increment_stack_pointer()?;
         Ok(())
     }
 
