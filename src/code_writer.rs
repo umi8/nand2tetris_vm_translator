@@ -191,6 +191,11 @@ impl CodeWriter {
     }
 
     fn not(&mut self) -> std::io::Result<()> {
+        self.decrement_stack_pointer();
+        self.set_memory_address_to_stack_pointer();
+        // store the result of not operation in A register
+        writeln!(&mut self.file, "M=!M")?;
+        self.increment_stack_pointer();
         Ok(())
     }
 
