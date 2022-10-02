@@ -42,10 +42,7 @@ impl CodeWriter {
     }
 
     fn add(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        // store top of stack value in D register
-        writeln!(&mut self.file, "D=M")?;
+        self.peek_value_into_d_register()?;
 
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
@@ -56,10 +53,7 @@ impl CodeWriter {
     }
 
     fn sub(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        // store top of stack value in D register
-        writeln!(&mut self.file, "D=M")?;
+        self.peek_value_into_d_register()?;
 
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
@@ -79,10 +73,7 @@ impl CodeWriter {
     }
 
     fn eq(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        // store top of stack value in D register
-        writeln!(&mut self.file, "D=M")?;
+        self.peek_value_into_d_register()?;
 
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
@@ -109,10 +100,7 @@ impl CodeWriter {
     }
 
     fn gt(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        // store top of stack value in D register
-        writeln!(&mut self.file, "D=M")?;
+        self.peek_value_into_d_register()?;
 
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
@@ -140,10 +128,7 @@ impl CodeWriter {
     }
 
     fn lt(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        // store top of stack value in D register
-        writeln!(&mut self.file, "D=M")?;
+        self.peek_value_into_d_register()?;
 
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
@@ -171,10 +156,7 @@ impl CodeWriter {
     }
 
     fn and(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        // store top of stack value in D register
-        writeln!(&mut self.file, "D=M")?;
+        self.peek_value_into_d_register()?;
 
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
@@ -185,10 +167,7 @@ impl CodeWriter {
     }
 
     fn or(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        // store top of stack value in D register
-        writeln!(&mut self.file, "D=M")?;
+        self.peek_value_into_d_register()?;
 
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
@@ -215,6 +194,14 @@ impl CodeWriter {
         // store index in stack[sp]
         writeln!(&mut self.file, "M=D")?;
         self.increment_stack_pointer()?;
+        Ok(())
+    }
+
+    fn peek_value_into_d_register(&mut self) -> std::io::Result<()>{
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
+        // store top of stack value in D register
+        writeln!(&mut self.file, "D=M")?;
         Ok(())
     }
 
