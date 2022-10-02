@@ -36,6 +36,11 @@ impl CodeWriter {
         Ok(())
     }
 
+    pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
+        self.push(index)?;
+        Ok(())
+    }
+
     fn add(&mut self) -> std::io::Result<()> {
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
@@ -199,11 +204,6 @@ impl CodeWriter {
         // store the result of not operation in A register
         writeln!(&mut self.file, "M=!M")?;
         self.increment_stack_pointer()?;
-        Ok(())
-    }
-
-    pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
-        self.push(index)?;
         Ok(())
     }
 
