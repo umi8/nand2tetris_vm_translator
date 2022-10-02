@@ -43,7 +43,6 @@ impl CodeWriter {
 
     fn add(&mut self) -> std::io::Result<()> {
         self.peek_value_into_d_register()?;
-
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=M+D")?;
@@ -53,7 +52,6 @@ impl CodeWriter {
 
     fn sub(&mut self) -> std::io::Result<()> {
         self.peek_value_into_d_register()?;
-
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=M-D")?;
@@ -71,7 +69,6 @@ impl CodeWriter {
 
     fn eq(&mut self) -> std::io::Result<()> {
         self.peek_value_into_d_register()?;
-
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
 
@@ -96,7 +93,6 @@ impl CodeWriter {
 
     fn gt(&mut self) -> std::io::Result<()> {
         self.peek_value_into_d_register()?;
-
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
 
@@ -121,7 +117,6 @@ impl CodeWriter {
 
     fn lt(&mut self) -> std::io::Result<()> {
         self.peek_value_into_d_register()?;
-
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
 
@@ -146,7 +141,6 @@ impl CodeWriter {
 
     fn and(&mut self) -> std::io::Result<()> {
         self.peek_value_into_d_register()?;
-
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=D&M")?;
@@ -156,7 +150,6 @@ impl CodeWriter {
 
     fn or(&mut self) -> std::io::Result<()> {
         self.peek_value_into_d_register()?;
-
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=D|M")?;
