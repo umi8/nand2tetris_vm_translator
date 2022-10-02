@@ -86,6 +86,7 @@ impl CodeWriter {
         writeln!(&mut self.file, "@COMP{}", self.comparison_counter)?;
         writeln!(&mut self.file, "D;JEQ")?;
         // set false
+        self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=0")?;
 
         writeln!(&mut self.file, "@ENDCOMP{}", self.comparison_counter)?;
@@ -116,6 +117,7 @@ impl CodeWriter {
         writeln!(&mut self.file, "@COMP{}", self.comparison_counter)?;
         writeln!(&mut self.file, "D;JGT")?;
         // set false
+        self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=0")?;
 
         writeln!(&mut self.file, "@ENDCOMP{}", self.comparison_counter)?;
@@ -146,6 +148,7 @@ impl CodeWriter {
         writeln!(&mut self.file, "@COMP{}", self.comparison_counter)?;
         writeln!(&mut self.file, "D;JLT")?;
         // set false
+        self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=0")?;
 
         writeln!(&mut self.file, "@ENDCOMP{}", self.comparison_counter)?;
