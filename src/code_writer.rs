@@ -68,71 +68,42 @@ impl CodeWriter {
     }
 
     fn eq(&mut self) -> std::io::Result<()> {
-        self.peek_value_into_d_register()?;
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-
-        writeln!(&mut self.file, "D=M-D")?;
-        writeln!(&mut self.file, "@COMP{}", self.comparison_counter)?;
-        writeln!(&mut self.file, "D;JEQ")?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=0")?;
-
-        writeln!(&mut self.file, "@ENDCOMP{}", self.comparison_counter)?;
-        writeln!(&mut self.file, "0;JMP")?;
-
-        writeln!(&mut self.file, "(COMP{})", self.comparison_counter)?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=-1")?;
-
-        writeln!(&mut self.file, "(ENDCOMP{})", self.comparison_counter)?;
-        self.increment_stack_pointer()?;
-        self.comparison_counter += 1;
+        self.comparison("JEQ")?;
         Ok(())
     }
 
     fn gt(&mut self) -> std::io::Result<()> {
-        self.peek_value_into_d_register()?;
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-
-        writeln!(&mut self.file, "D=M-D")?;
-        writeln!(&mut self.file, "@COMP{}", self.comparison_counter)?;
-        writeln!(&mut self.file, "D;JGT")?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=0")?;
-
-        writeln!(&mut self.file, "@ENDCOMP{}", self.comparison_counter)?;
-        writeln!(&mut self.file, "0;JMP")?;
-
-        writeln!(&mut self.file, "(COMP{})", self.comparison_counter)?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=-1")?;
-
-        writeln!(&mut self.file, "(ENDCOMP{})", self.comparison_counter)?;
-        self.increment_stack_pointer()?;
-        self.comparison_counter += 1;
+        self.comparison("JGT")?;
         Ok(())
     }
 
     fn lt(&mut self) -> std::io::Result<()> {
+        self.comparison("JLT")?;
+        Ok(())
+    }
+
+    fn comparison(&mut self, jump_mnemonic: &str) -> std::io::Result<()> {
         self.peek_value_into_d_register()?;
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
-
+        // D=x-y
         writeln!(&mut self.file, "D=M-D")?;
+        // set the destination address if true in A register
         writeln!(&mut self.file, "@COMP{}", self.comparison_counter)?;
-        writeln!(&mut self.file, "D;JLT")?;
+        // jump operation
+        writeln!(&mut self.file, "D;{}", jump_mnemonic)?;
+        // set false
         self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=0")?;
-
+        // set the destination address of finally process in A register and jump
         writeln!(&mut self.file, "@ENDCOMP{}", self.comparison_counter)?;
         writeln!(&mut self.file, "0;JMP")?;
-
+        // define a label if true
         writeln!(&mut self.file, "(COMP{})", self.comparison_counter)?;
+        // set true
         self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=-1")?;
-
+        // define a label for finally process
         writeln!(&mut self.file, "(ENDCOMP{})", self.comparison_counter)?;
         self.increment_stack_pointer()?;
         self.comparison_counter += 1;
