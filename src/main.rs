@@ -23,9 +23,9 @@ fn main() -> std::io::Result<()> {
             CommandType::ARITHMETIC => {
                 code_writer.write_arithmetic(&parser.arg1())?
             }
-            CommandType::PUSH => {
+            CommandType::PUSH | CommandType::POP => {
                 code_writer.write_push_pop(
-                    CommandType::PUSH,
+                    parser.command_type(),
                     &parser.arg1(),
                     &parser.arg2().parse::<i32>().unwrap(),
                 )?

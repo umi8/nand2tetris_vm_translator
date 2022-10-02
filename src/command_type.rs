@@ -2,12 +2,15 @@
 pub enum CommandType {
     ARITHMETIC,
     PUSH,
+    POP,
 }
 
 impl CommandType {
     pub fn from(command: &str) -> CommandType {
         return if command.eq("push") {
             CommandType::PUSH
+        } else if command.eq("pop") {
+            CommandType::POP
         } else {
             CommandType::ARITHMETIC
         }
@@ -26,5 +29,10 @@ mod tests {
     #[test]
     fn return_type_push() {
         assert_eq!(CommandType::PUSH, CommandType::from("push"))
+    }
+
+    #[test]
+    fn return_type_pop() {
+        assert_eq!(CommandType::POP, CommandType::from("pop"))
     }
 }

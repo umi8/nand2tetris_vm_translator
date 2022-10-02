@@ -54,7 +54,7 @@ impl Parser {
     pub fn arg1(&self) -> &str {
         return match self.command_type() {
             CommandType::ARITHMETIC => { &self.command }
-            CommandType::PUSH => {
+            CommandType::PUSH | CommandType::POP => {
                 let commands: Vec<&str> = self.command.split_whitespace().collect();
                 commands[1]
             }
