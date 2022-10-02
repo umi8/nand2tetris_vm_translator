@@ -42,20 +42,12 @@ impl CodeWriter {
     }
 
     fn add(&mut self) -> std::io::Result<()> {
-        self.peek_value_into_d_register()?;
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=M+D")?;
-        self.increment_stack_pointer()?;
+        self.binary_operation("+")?;
         Ok(())
     }
 
     fn sub(&mut self) -> std::io::Result<()> {
-        self.peek_value_into_d_register()?;
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=M-D")?;
-        self.increment_stack_pointer()?;
+        self.binary_operation("-")?;
         Ok(())
     }
 
@@ -111,20 +103,12 @@ impl CodeWriter {
     }
 
     fn and(&mut self) -> std::io::Result<()> {
-        self.peek_value_into_d_register()?;
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=D&M")?;
-        self.increment_stack_pointer()?;
+        self.binary_operation("&")?;
         Ok(())
     }
 
     fn or(&mut self) -> std::io::Result<()> {
-        self.peek_value_into_d_register()?;
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=D|M")?;
-        self.increment_stack_pointer()?;
+        self.binary_operation("|")?;
         Ok(())
     }
 
@@ -145,7 +129,16 @@ impl CodeWriter {
         Ok(())
     }
 
-    fn peek_value_into_d_register(&mut self) -> std::io::Result<()>{
+    fn binary_operation(&mut self, operator: &str) -> std::io::Result<()> {
+        self.peek_value_into_d_register()?;
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
+        writeln!(&mut self.file, "M=M{}D", operator)?;
+        self.increment_stack_pointer()?;
+        Ok(())
+    }
+
+    fn peek_value_into_d_register(&mut self) -> std::io::Result<()> {
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
         // store top of stack value in D register
