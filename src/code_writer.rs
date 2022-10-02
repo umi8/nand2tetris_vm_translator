@@ -52,10 +52,7 @@ impl CodeWriter {
     }
 
     fn neg(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=-M")?;
-        self.increment_stack_pointer()?;
+        self.unary_operation("-")?;
         Ok(())
     }
 
@@ -113,10 +110,7 @@ impl CodeWriter {
     }
 
     fn not(&mut self) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=!M")?;
-        self.increment_stack_pointer()?;
+        self.unary_operation("!")?;
         Ok(())
     }
 
@@ -134,6 +128,14 @@ impl CodeWriter {
         self.decrement_stack_pointer()?;
         self.set_memory_address_to_stack_pointer()?;
         writeln!(&mut self.file, "M=M{}D", operator)?;
+        self.increment_stack_pointer()?;
+        Ok(())
+    }
+
+    fn unary_operation(&mut self, operator: &str) -> std::io::Result<()> {
+        self.decrement_stack_pointer()?;
+        self.set_memory_address_to_stack_pointer()?;
+        writeln!(&mut self.file, "M={}M", operator)?;
         self.increment_stack_pointer()?;
         Ok(())
     }
