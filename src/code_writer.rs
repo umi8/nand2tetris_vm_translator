@@ -37,7 +37,11 @@ impl CodeWriter {
     }
 
     pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> std::io::Result<()> {
-        self.push(index)?;
+        if command == CommandType::PUSH {
+            self.push(segment, index)?;
+        } else if command == CommandType::POP {
+            self.pop(segment, index)?;
+        }
         Ok(())
     }
 
@@ -86,12 +90,71 @@ impl CodeWriter {
         Ok(())
     }
 
-    fn push(&mut self, index: &i32) -> std::io::Result<()> {
+    fn push(&mut self, segment: &str, index: &i32) -> std::io::Result<()> {
+        if segment.eq("constant") {
+            writeln!(&mut self.file, "@{}", index)?;
+            writeln!(&mut self.file, "D=A")?;
+            self.set_memory_address_to_stack_pointer()?;
+            writeln!(&mut self.file, "M=D")?;
+            self.increment_stack_pointer()?;
+        } else {
+            writeln!(&mut self.file, "@{}", index)?;
+            writeln!(&mut self.file, "D=A")?;
+
+            if segment.eq("local") {
+                writeln!(&mut self.file, "@LCL")?;
+                writeln!(&mut self.file, "A=D+M")?;
+            } else if segment.eq("argument") {
+                writeln!(&mut self.file, "@ARG")?;
+                writeln!(&mut self.file, "A=D+M")?;
+            } else if segment.eq("this") {
+                writeln!(&mut self.file, "@THIS")?;
+                writeln!(&mut self.file, "A=D+M")?;
+            } else if segment.eq("that") {
+                writeln!(&mut self.file, "@THAT")?;
+                writeln!(&mut self.file, "A=D+M")?;
+            } else if segment.eq("temp") {
+                writeln!(&mut self.file, "@5")?;
+                writeln!(&mut self.file, "A=D+A")?;
+            }
+            writeln!(&mut self.file, "D=M")?;
+            self.set_memory_address_to_stack_pointer()?;
+            writeln!(&mut self.file, "M=D")?;
+            self.increment_stack_pointer()?;
+        }
+        Ok(())
+    }
+
+    fn pop(&mut self, segment: &str, index: &i32) -> std::io::Result<()> {
         writeln!(&mut self.file, "@{}", index)?;
         writeln!(&mut self.file, "D=A")?;
-        self.set_memory_address_to_stack_pointer()?;
+
+        if segment.eq("local") {
+            writeln!(&mut self.file, "@LCL")?;
+            writeln!(&mut self.file, "D=D+M")?;
+        } else if segment.eq("argument") {
+            writeln!(&mut self.file, "@ARG")?;
+            writeln!(&mut self.file, "D=D+M")?;
+        } else if segment.eq("this") {
+            writeln!(&mut self.file, "@THIS")?;
+            writeln!(&mut self.file, "D=D+M")?;
+        } else if segment.eq("that") {
+            writeln!(&mut self.file, "@THAT")?;
+            writeln!(&mut self.file, "D=D+M")?;
+        } else if segment.eq("temp") {
+            writeln!(&mut self.file, "@5")?;
+            writeln!(&mut self.file, "D=D+A")?;
+        }
+
+        writeln!(&mut self.file, "@R13")?;
         writeln!(&mut self.file, "M=D")?;
-        self.increment_stack_pointer()?;
+
+        self.peek_value_into_d_register()?;
+
+        writeln!(&mut self.file, "@R13")?;
+        writeln!(&mut self.file, "A=M")?;
+
+        writeln!(&mut self.file, "M=D")?;
         Ok(())
     }
 
