@@ -98,25 +98,8 @@ impl CodeWriter {
             writeln!(&mut self.file, "M=D")?;
             self.increment_stack_pointer()?;
         } else {
-            writeln!(&mut self.file, "@{}", index)?;
-            writeln!(&mut self.file, "D=A")?;
-
-            if segment.eq("local") {
-                writeln!(&mut self.file, "@LCL")?;
-                writeln!(&mut self.file, "A=D+M")?;
-            } else if segment.eq("argument") {
-                writeln!(&mut self.file, "@ARG")?;
-                writeln!(&mut self.file, "A=D+M")?;
-            } else if segment.eq("this") {
-                writeln!(&mut self.file, "@THIS")?;
-                writeln!(&mut self.file, "A=D+M")?;
-            } else if segment.eq("that") {
-                writeln!(&mut self.file, "@THAT")?;
-                writeln!(&mut self.file, "A=D+M")?;
-            } else if segment.eq("temp") {
-                writeln!(&mut self.file, "@5")?;
-                writeln!(&mut self.file, "A=D+A")?;
-            }
+            self.store_address_into_d_register(segment, index)?;
+            writeln!(&mut self.file, "A=D")?;
             writeln!(&mut self.file, "D=M")?;
             self.set_memory_address_to_stack_pointer()?;
             writeln!(&mut self.file, "M=D")?;
