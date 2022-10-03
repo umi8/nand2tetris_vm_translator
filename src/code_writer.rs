@@ -126,9 +126,7 @@ impl CodeWriter {
     }
 
     fn pop(&mut self, segment: &str, index: &i32) -> std::io::Result<()> {
-        self.set_base_address_of_segment(segment)?;
-        writeln!(&mut self.file, "@{}", index)?;
-        writeln!(&mut self.file, "D=D+A")?;
+        self.store_address_into_d_register(segment, index)?;
 
         writeln!(&mut self.file, "@R13")?;
         writeln!(&mut self.file, "M=D")?;
@@ -142,7 +140,7 @@ impl CodeWriter {
         Ok(())
     }
 
-    fn set_base_address_of_segment(&mut self, segment: &str) -> std::io::Result<()> {
+    fn store_address_into_d_register(&mut self, segment: &str, index: &i32) -> std::io::Result<()> {
         if segment.eq("local") {
             writeln!(&mut self.file, "@LCL")?;
             writeln!(&mut self.file, "D=M")?;
@@ -159,6 +157,9 @@ impl CodeWriter {
             writeln!(&mut self.file, "@5")?;
             writeln!(&mut self.file, "D=A")?;
         }
+
+        writeln!(&mut self.file, "@{}", index)?;
+        writeln!(&mut self.file, "D=D+A")?;
         Ok(())
     }
 
