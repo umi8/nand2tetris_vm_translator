@@ -126,25 +126,9 @@ impl CodeWriter {
     }
 
     fn pop(&mut self, segment: &str, index: &i32) -> std::io::Result<()> {
+        self.set_base_address_of_segment(segment)?;
         writeln!(&mut self.file, "@{}", index)?;
-        writeln!(&mut self.file, "D=A")?;
-
-        if segment.eq("local") {
-            writeln!(&mut self.file, "@LCL")?;
-            writeln!(&mut self.file, "D=D+M")?;
-        } else if segment.eq("argument") {
-            writeln!(&mut self.file, "@ARG")?;
-            writeln!(&mut self.file, "D=D+M")?;
-        } else if segment.eq("this") {
-            writeln!(&mut self.file, "@THIS")?;
-            writeln!(&mut self.file, "D=D+M")?;
-        } else if segment.eq("that") {
-            writeln!(&mut self.file, "@THAT")?;
-            writeln!(&mut self.file, "D=D+M")?;
-        } else if segment.eq("temp") {
-            writeln!(&mut self.file, "@5")?;
-            writeln!(&mut self.file, "D=D+A")?;
-        }
+        writeln!(&mut self.file, "D=D+A")?;
 
         writeln!(&mut self.file, "@R13")?;
         writeln!(&mut self.file, "M=D")?;
@@ -155,6 +139,26 @@ impl CodeWriter {
         writeln!(&mut self.file, "A=M")?;
 
         writeln!(&mut self.file, "M=D")?;
+        Ok(())
+    }
+
+    fn set_base_address_of_segment(&mut self, segment: &str) -> std::io::Result<()> {
+        if segment.eq("local") {
+            writeln!(&mut self.file, "@LCL")?;
+            writeln!(&mut self.file, "D=M")?;
+        } else if segment.eq("argument") {
+            writeln!(&mut self.file, "@ARG")?;
+            writeln!(&mut self.file, "D=M")?;
+        } else if segment.eq("this") {
+            writeln!(&mut self.file, "@THIS")?;
+            writeln!(&mut self.file, "D=M")?;
+        } else if segment.eq("that") {
+            writeln!(&mut self.file, "@THAT")?;
+            writeln!(&mut self.file, "D=M")?;
+        } else if segment.eq("temp") {
+            writeln!(&mut self.file, "@5")?;
+            writeln!(&mut self.file, "D=A")?;
+        }
         Ok(())
     }
 
