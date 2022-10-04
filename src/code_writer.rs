@@ -97,6 +97,16 @@ impl CodeWriter {
             self.set_memory_address_to_stack_pointer()?;
             writeln!(&mut self.file, "M=D")?;
             self.increment_stack_pointer()?;
+        } else if segment.eq("pointer") {
+            if *index == 0 {
+                writeln!(&mut self.file, "@THIS")?;
+            } else if *index == 1 {
+                writeln!(&mut self.file, "@THAT")?;
+            }
+            writeln!(&mut self.file, "D=M")?;
+            self.set_memory_address_to_stack_pointer()?;
+            writeln!(&mut self.file, "M=D")?;
+            self.increment_stack_pointer()?;
         } else {
             self.store_address_into_d_register(segment, index)?;
             writeln!(&mut self.file, "A=D")?;
@@ -109,17 +119,35 @@ impl CodeWriter {
     }
 
     fn pop(&mut self, segment: &str, index: &i32) -> std::io::Result<()> {
-        self.store_address_into_d_register(segment, index)?;
+        if segment.eq("pointer") {
+            if *index == 0 {
+                writeln!(&mut self.file, "@THIS")?;
+            } else if *index == 1 {
+                writeln!(&mut self.file, "@THAT")?;
+            }
+            writeln!(&mut self.file, "D=A")?;
+            writeln!(&mut self.file, "@R13")?;
+            writeln!(&mut self.file, "M=D")?;
 
-        writeln!(&mut self.file, "@R13")?;
-        writeln!(&mut self.file, "M=D")?;
+            self.peek_value_into_d_register()?;
 
-        self.peek_value_into_d_register()?;
+            writeln!(&mut self.file, "@R13")?;
+            writeln!(&mut self.file, "A=M")?;
 
-        writeln!(&mut self.file, "@R13")?;
-        writeln!(&mut self.file, "A=M")?;
+            writeln!(&mut self.file, "M=D")?;
+        } else {
+            self.store_address_into_d_register(segment, index)?;
 
-        writeln!(&mut self.file, "M=D")?;
+            writeln!(&mut self.file, "@R13")?;
+            writeln!(&mut self.file, "M=D")?;
+
+            self.peek_value_into_d_register()?;
+
+            writeln!(&mut self.file, "@R13")?;
+            writeln!(&mut self.file, "A=M")?;
+
+            writeln!(&mut self.file, "M=D")?;
+        }
         Ok(())
     }
 
