@@ -1,38 +1,34 @@
 use std::fs::File;
 use std::io::Write;
 
-use crate::arithmetic_type::ArithmeticType;
+use crate::arithmetic_writer::ArithmeticWriter;
 use crate::CommandType;
+use crate::my_error::MyError;
 
 pub struct CodeWriter {
     file: File,
-    comparison_counter: i32
+    comparison_counter: i32,
+    arithmetic_writer: ArithmeticWriter,
 }
 
 impl CodeWriter {
-    pub fn new(file_path: &str) -> Result<Self, &'static str> {
+    pub fn new(file_path: &str) -> Result<Self, MyError> {
         let out = File::create(file_path);
 
         match out {
             Ok(file) => {
-                Ok(CodeWriter { file, comparison_counter: 0 })
+                Ok(CodeWriter {
+                    file,
+                    comparison_counter: 0,
+                    arithmetic_writer: ArithmeticWriter::new(),
+                })
             }
-            Err(_) => Err("file error"),
+            Err(e) => Err(MyError::Io(e))
         }
     }
 
-    pub fn write_arithmetic(&mut self, command: &str) -> std::io::Result<()> {
-        match ArithmeticType::from(command).unwrap() {
-            ArithmeticType::ADD => self.add(),
-            ArithmeticType::SUB => self.sub(),
-            ArithmeticType::NEG => self.neg(),
-            ArithmeticType::EQ => self.eq(),
-            ArithmeticType::GT => self.gt(),
-            ArithmeticType::LT => self.lt(),
-            ArithmeticType::AND => self.and(),
-            ArithmeticType::OR => self.or(),
-            ArithmeticType::NOT => self.not()
-        }?;
+    pub fn write_arithmetic(&mut self, command: &str) -> Result<(), MyError> {
+        write!(&mut self.file, "{}", self.arithmetic_writer.write(command)?)?;
         Ok(())
     }
 
