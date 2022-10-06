@@ -6,6 +6,8 @@ mod command_type;
 mod code_writer;
 mod parser;
 mod arithmetic_type;
+mod arithmetic_writer;
+mod my_error;
 
 fn main() -> std::io::Result<()> {
     let mut parser = match Parser::new("File.vm") {
@@ -21,7 +23,7 @@ fn main() -> std::io::Result<()> {
     while parser.has_more_commands() {
         match parser.command_type() {
             CommandType::ARITHMETIC => {
-                code_writer.write_arithmetic(&parser.arg1())?
+                code_writer.write_arithmetic(&parser.arg1()).unwrap()
             }
             CommandType::PUSH | CommandType::POP => {
                 code_writer.write_push_pop(
