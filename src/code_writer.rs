@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::Write;
 
+use crate::arithmetic_type::ArithmeticType;
 use crate::arithmetic_writer;
 use crate::CommandType;
 use crate::my_error::MyError;
@@ -26,9 +27,11 @@ impl CodeWriter {
     }
 
     pub fn write_arithmetic(&mut self, command: &str) -> Result<(), MyError> {
-        let (operation, counter) = arithmetic_writer::write(command, self.comparison_counter)?;
-        self.comparison_counter = counter;
-        write!(&mut self.file, "{}", operation)?;
+        write!(&mut self.file, "{}", arithmetic_writer::write(command, self.comparison_counter)?)?;
+        self.comparison_counter += match ArithmeticType::from(command).unwrap() {
+            ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT => 1,
+            _ => 0
+        };
         Ok(())
     }
 
