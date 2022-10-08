@@ -41,51 +41,6 @@ impl CodeWriter {
         Ok(())
     }
 
-    fn add(&mut self) -> std::io::Result<()> {
-        self.binary_operation("+")?;
-        Ok(())
-    }
-
-    fn sub(&mut self) -> std::io::Result<()> {
-        self.binary_operation("-")?;
-        Ok(())
-    }
-
-    fn neg(&mut self) -> std::io::Result<()> {
-        self.unary_operation("-")?;
-        Ok(())
-    }
-
-    fn eq(&mut self) -> std::io::Result<()> {
-        self.comparison("JEQ")?;
-        Ok(())
-    }
-
-    fn gt(&mut self) -> std::io::Result<()> {
-        self.comparison("JGT")?;
-        Ok(())
-    }
-
-    fn lt(&mut self) -> std::io::Result<()> {
-        self.comparison("JLT")?;
-        Ok(())
-    }
-
-    fn and(&mut self) -> std::io::Result<()> {
-        self.binary_operation("&")?;
-        Ok(())
-    }
-
-    fn or(&mut self) -> std::io::Result<()> {
-        self.binary_operation("|")?;
-        Ok(())
-    }
-
-    fn not(&mut self) -> std::io::Result<()> {
-        self.unary_operation("!")?;
-        Ok(())
-    }
-
     fn push(&mut self, segment: &str, index: &i32) -> std::io::Result<()> {
         if segment.eq("constant") {
             writeln!(&mut self.file, "@{}", index)?;
@@ -167,51 +122,6 @@ impl CodeWriter {
 
         writeln!(&mut self.file, "@{}", index)?;
         writeln!(&mut self.file, "D=D+A")?;
-        Ok(())
-    }
-
-    fn binary_operation(&mut self, operator: &str) -> std::io::Result<()> {
-        self.peek_value_into_d_register()?;
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=M{}D", operator)?;
-        self.increment_stack_pointer()?;
-        Ok(())
-    }
-
-    fn unary_operation(&mut self, operator: &str) -> std::io::Result<()> {
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M={}M", operator)?;
-        self.increment_stack_pointer()?;
-        Ok(())
-    }
-
-    fn comparison(&mut self, jump_mnemonic: &str) -> std::io::Result<()> {
-        self.peek_value_into_d_register()?;
-        self.decrement_stack_pointer()?;
-        self.set_memory_address_to_stack_pointer()?;
-        // D=x-y
-        writeln!(&mut self.file, "D=M-D")?;
-        // set the destination address if true in A register
-        writeln!(&mut self.file, "@COMP{}", self.comparison_counter)?;
-        // jump operation
-        writeln!(&mut self.file, "D;{}", jump_mnemonic)?;
-        // set false
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=0")?;
-        // set the destination address of finally process in A register and jump
-        writeln!(&mut self.file, "@ENDCOMP{}", self.comparison_counter)?;
-        writeln!(&mut self.file, "0;JMP")?;
-        // define a label if true
-        writeln!(&mut self.file, "(COMP{})", self.comparison_counter)?;
-        // set true
-        self.set_memory_address_to_stack_pointer()?;
-        writeln!(&mut self.file, "M=-1")?;
-        // define a label for finally process
-        writeln!(&mut self.file, "(ENDCOMP{})", self.comparison_counter)?;
-        self.increment_stack_pointer()?;
-        self.comparison_counter += 1;
         Ok(())
     }
 
