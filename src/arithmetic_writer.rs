@@ -2,7 +2,7 @@ use std::fmt::{Error, Write};
 
 use crate::arithmetic_type::ArithmeticType;
 
-pub fn write(command: &str) -> Result<String, Error> {
+pub fn write(command: &str, comparison_counter: i32) -> Result<(String, i32), Error> {
     let mut s = String::new();
     match ArithmeticType::from(command).unwrap() {
         ArithmeticType::ADD => add(&mut s),
@@ -18,8 +18,12 @@ pub fn write(command: &str) -> Result<String, Error> {
     }?;
     add(&mut s)?;
     writeln!(s, "{}", command)?;
-    writeln!(s, "{}", command)?;
-    Ok(s)
+    writeln!(s, "{}", comparison_counter)?;
+    let inc = match ArithmeticType::from(command).unwrap() {
+        ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT => comparison_counter + 1,
+        _ => comparison_counter
+    };
+    Ok((s, inc))
 }
 
 fn add(s: &mut String) -> Result<(), Error> {
