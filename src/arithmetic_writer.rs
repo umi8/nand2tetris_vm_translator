@@ -6,19 +6,16 @@ pub fn write(command: &str, comparison_counter: i32) -> Result<(String, i32), Er
     let mut s = String::new();
     match ArithmeticType::from(command).unwrap() {
         ArithmeticType::ADD => add(&mut s),
-        // ArithmeticType::SUB => self.sub(),
-        // ArithmeticType::NEG => self.neg(),
-        // ArithmeticType::EQ => self.eq(),
-        // ArithmeticType::GT => self.gt(),
-        // ArithmeticType::LT => self.lt(),
-        // ArithmeticType::AND => self.and(),
-        // ArithmeticType::OR => self.or(),
-        // ArithmeticType::NOT => self.not()
+        // ArithmeticType::SUB => sub(),
+        // ArithmeticType::NEG => neg(),
+        // ArithmeticType::EQ => eq(),
+        // ArithmeticType::GT => gt(),
+        // ArithmeticType::LT => lt(),
+        // ArithmeticType::AND => and(),
+        // ArithmeticType::OR => or(),
+        // ArithmeticType::NOT => not()
         _ => sub()
     }?;
-    add(&mut s)?;
-    writeln!(s, "{}", command)?;
-    writeln!(s, "{}", comparison_counter)?;
     let inc = match ArithmeticType::from(command).unwrap() {
         ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT => comparison_counter + 1,
         _ => comparison_counter
@@ -27,10 +24,45 @@ pub fn write(command: &str, comparison_counter: i32) -> Result<(String, i32), Er
 }
 
 fn add(s: &mut String) -> Result<(), Error> {
-    writeln!(s, "{}", "add_fn")?;
+    binary_operation(s, "+");
     Ok(())
 }
 
 fn sub() -> Result<(), Error> {
+    Ok(())
+}
+
+fn binary_operation(s: &mut String, operator: &str) -> Result<(), Error> {
+    peek_value_into_d_register(s)?;
+    decrement_stack_pointer(s)?;
+    set_memory_address_to_stack_pointer(s)?;
+    writeln!(s, "M=M{}D", operator)?;
+    increment_stack_pointer(s)?;
+    Ok(())
+}
+
+fn peek_value_into_d_register(s: &mut String) -> Result<(), Error> {
+    decrement_stack_pointer(s)?;
+    set_memory_address_to_stack_pointer(s)?;
+    // store top of stack value in D register
+    writeln!(s, "D=M")?;
+    Ok(())
+}
+
+fn set_memory_address_to_stack_pointer(s: &mut String) -> Result<(), Error> {
+    writeln!(s, "@SP")?;
+    writeln!(s, "A=M")?;
+    Ok(())
+}
+
+fn increment_stack_pointer(s: &mut String) -> Result<(), Error> {
+    writeln!(s, "@SP")?;
+    writeln!(s, "M=M+1")?;
+    Ok(())
+}
+
+fn decrement_stack_pointer(s: &mut String) -> Result<(), Error> {
+    writeln!(s, "@SP")?;
+    writeln!(s, "M=M-1")?;
     Ok(())
 }

@@ -29,7 +29,6 @@ impl CodeWriter {
         let (operation, counter) = arithmetic_writer::write(command, self.comparison_counter)?;
         self.comparison_counter = counter;
         write!(&mut self.file, "{}", operation)?;
-        write!(&mut self.file, "{}", self.comparison_counter)?;
         Ok(())
     }
 
