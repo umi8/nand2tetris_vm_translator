@@ -2,9 +2,9 @@ use std::fmt::{Error, Write};
 
 use crate::arithmetic_type::ArithmeticType;
 
-pub fn write(command: &str, comparison_counter: i32) -> Result<String, Error> {
+pub fn write(command: &ArithmeticType, comparison_counter: i32) -> Result<String, Error> {
     let mut s = String::new();
-    match ArithmeticType::from(command).unwrap() {
+    match command {
         ArithmeticType::ADD => add(&mut s),
         ArithmeticType::SUB => sub(&mut s),
         ArithmeticType::NEG => neg(&mut s),

@@ -1,3 +1,4 @@
+use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
 use crate::command_type::CommandType;
 use crate::parser::Parser;
@@ -24,7 +25,9 @@ fn main() -> std::io::Result<()> {
     while parser.has_more_commands() {
         match parser.command_type() {
             CommandType::ARITHMETIC => {
-                code_writer.write_arithmetic(&parser.arg1()).unwrap()
+                code_writer.write_arithmetic(
+                    ArithmeticType::from(&parser.arg1()).unwrap()
+                ).unwrap()
             }
             CommandType::PUSH | CommandType::POP => {
                 code_writer.write_push_pop(

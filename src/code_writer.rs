@@ -26,9 +26,9 @@ impl CodeWriter {
         }
     }
 
-    pub fn write_arithmetic(&mut self, command: &str) -> Result<(), MyError> {
-        write!(&mut self.file, "{}", arithmetic_writer::write(command, self.comparison_counter)?)?;
-        if ArithmeticType::from(command).unwrap().is_comparison_type() {
+    pub fn write_arithmetic(&mut self, arithmetic_command: ArithmeticType) -> Result<(), MyError> {
+        write!(&mut self.file, "{}", arithmetic_writer::write(&arithmetic_command, self.comparison_counter)?)?;
+        if arithmetic_command.is_comparison_type() {
             self.comparison_counter += 1;
         }
         Ok(())
