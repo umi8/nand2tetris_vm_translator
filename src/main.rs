@@ -8,6 +8,7 @@ mod parser;
 mod arithmetic_type;
 mod arithmetic_writer;
 mod my_error;
+mod push_pop_writer;
 
 fn main() -> std::io::Result<()> {
     let mut parser = match Parser::new("File.vm") {
@@ -30,7 +31,7 @@ fn main() -> std::io::Result<()> {
                     parser.command_type(),
                     &parser.arg1(),
                     &parser.arg2().parse::<i32>().unwrap(),
-                )?
+                ).unwrap()
             }
         }
     }
