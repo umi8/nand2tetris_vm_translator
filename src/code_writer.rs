@@ -28,10 +28,9 @@ impl CodeWriter {
 
     pub fn write_arithmetic(&mut self, command: &str) -> Result<(), MyError> {
         write!(&mut self.file, "{}", arithmetic_writer::write(command, self.comparison_counter)?)?;
-        self.comparison_counter += match ArithmeticType::from(command).unwrap() {
-            ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT => 1,
-            _ => 0
-        };
+        if ArithmeticType::from(command).unwrap().is_comparison_type() {
+            self.comparison_counter += 1;
+        }
         Ok(())
     }
 
@@ -39,6 +38,5 @@ impl CodeWriter {
         write!(&mut self.file, "{}", push_pop_writer::write(command, segment, index)?)?;
         Ok(())
     }
-
 
 }

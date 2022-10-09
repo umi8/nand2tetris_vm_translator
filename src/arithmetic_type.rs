@@ -26,6 +26,13 @@ impl ArithmeticType {
             &_ => Err("Not type")
         };
     }
+
+    pub fn is_comparison_type(&self) -> bool {
+        return match self {
+            ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT => true,
+            _ => false
+        }
+    }
 }
 
 #[cfg(test)]
