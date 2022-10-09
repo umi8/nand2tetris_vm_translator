@@ -10,6 +10,7 @@ mod arithmetic_type;
 mod arithmetic_writer;
 mod my_error;
 mod push_pop_writer;
+mod segment;
 
 fn main() -> std::io::Result<()> {
     let mut parser = match Parser::new("File.vm") {
