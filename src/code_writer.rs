@@ -5,6 +5,7 @@ use crate::{arithmetic_writer, push_pop_writer};
 use crate::arithmetic_type::ArithmeticType;
 use crate::CommandType;
 use crate::my_error::MyError;
+use crate::segment::Segment;
 
 pub struct CodeWriter {
     file: File,
@@ -34,7 +35,7 @@ impl CodeWriter {
         Ok(())
     }
 
-    pub fn write_push_pop(&mut self, command: CommandType, segment: &str, index: &i32) -> Result<(), MyError> {
+    pub fn write_push_pop(&mut self, command: CommandType, segment: Segment, index: &i32) -> Result<(), MyError> {
         write!(&mut self.file, "{}", push_pop_writer::write(command, segment, index)?)?;
         Ok(())
     }

@@ -2,6 +2,7 @@ use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
 use crate::command_type::CommandType;
 use crate::parser::Parser;
+use crate::segment::Segment;
 
 mod command_type;
 mod code_writer;
@@ -33,7 +34,7 @@ fn main() -> std::io::Result<()> {
             CommandType::PUSH | CommandType::POP => {
                 code_writer.write_push_pop(
                     parser.command_type(),
-                    &parser.arg1(),
+                    Segment::from(&parser.arg1()).unwrap(),
                     &parser.arg2().parse::<i32>().unwrap(),
                 ).unwrap()
             }

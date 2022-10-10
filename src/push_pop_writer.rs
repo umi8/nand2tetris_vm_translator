@@ -3,7 +3,7 @@ use std::fmt::{Error, Write};
 use crate::CommandType;
 use crate::segment::Segment;
 
-pub fn write(command: CommandType, segment: &str, index: &i32) -> Result<String, Error> {
+pub fn write(command: CommandType, segment: Segment, index: &i32) -> Result<String, Error> {
     let mut s = String::new();
     if command == CommandType::PUSH {
         push(&mut s, segment, index)?;
@@ -13,8 +13,8 @@ pub fn write(command: CommandType, segment: &str, index: &i32) -> Result<String,
     Ok(s)
 }
 
-fn push(s: &mut String, segment: &str, index: &i32) -> Result<(), Error> {
-    match Segment::from(segment).unwrap() {
+fn push(s: &mut String, segment: Segment, index: &i32) -> Result<(), Error> {
+    match segment {
         Segment::CONSTANT => {
             writeln!(s, "@{}", index)?;
             writeln!(s, "D=A")?;
@@ -83,8 +83,8 @@ fn push(s: &mut String, segment: &str, index: &i32) -> Result<(), Error> {
     Ok(())
 }
 
-fn pop(s: &mut String, segment: &str, index: &i32) -> Result<(), Error> {
-    match Segment::from(segment).unwrap() {
+fn pop(s: &mut String, segment: Segment, index: &i32) -> Result<(), Error> {
+    match segment {
         Segment::CONSTANT => {} // do nothing
         Segment::LOCAL => {
             writeln!(s, "@LCL")?;
