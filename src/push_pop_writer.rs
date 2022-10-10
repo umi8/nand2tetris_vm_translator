@@ -67,7 +67,14 @@ fn push(s: &mut String, segment: &str, index: &i32) -> Result<(), Error> {
             }
             writeln!(s, "D=M")?;
         },
-        Segment::STATIC => {}
+        Segment::STATIC => {
+            writeln!(s, "@16")?;
+            writeln!(s, "D=A")?;
+            writeln!(s, "@{}", index)?;
+            writeln!(s, "D=D+A")?;
+            writeln!(s, "A=D")?;
+            writeln!(s, "D=M")?;
+        }
     }
 
     set_memory_address_to_stack_pointer(s)?;
@@ -117,7 +124,12 @@ fn pop(s: &mut String, segment: &str, index: &i32) -> Result<(), Error> {
             }
             writeln!(s, "D=A")?;
         },
-        Segment::STATIC => {}
+        Segment::STATIC => {
+            writeln!(s, "@16")?;
+            writeln!(s, "D=A")?;
+            writeln!(s, "@{}", index)?;
+            writeln!(s, "D=D+A")?;
+        }
     }
 
     writeln!(s, "@R13")?;
