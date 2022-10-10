@@ -7,6 +7,7 @@ pub enum Segment {
     THAT,
     TEMP,
     POINTER,
+    STATIC
 }
 
 impl Segment {
@@ -19,6 +20,7 @@ impl Segment {
             "that" => Ok(Segment::THAT),
             "temp" => Ok(Segment::TEMP),
             "pointer" => Ok(Segment::POINTER),
+            "static" => Ok(Segment::STATIC),
             &_ => Err("Illegal Argument")
         }
     }
@@ -62,6 +64,11 @@ mod tests {
     #[test]
     fn return_pointer() {
         assert_eq!(POINTER, Segment::from("pointer").unwrap())
+    }
+
+    #[test]
+    fn return_static() {
+        assert_eq!(STATIC, Segment::from("static").unwrap())
     }
 
     #[test]
