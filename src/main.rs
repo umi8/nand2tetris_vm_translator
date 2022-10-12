@@ -1,6 +1,7 @@
 use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
 use crate::command_type::CommandType;
+use crate::my_error::MyError;
 use crate::parser::Parser;
 use crate::segment::Segment;
 
@@ -13,7 +14,7 @@ mod my_error;
 mod push_pop_writer;
 mod segment;
 
-fn main() -> std::io::Result<()> {
+fn main() -> Result<(), MyError> {
     let mut parser = match Parser::new("File.vm") {
         Ok(parser) => parser,
         Err(why) => panic!("couldn't open file: {}", why)
@@ -29,14 +30,14 @@ fn main() -> std::io::Result<()> {
             CommandType::ARITHMETIC => {
                 code_writer.write_arithmetic(
                     ArithmeticType::from(&parser.arg1()).unwrap()
-                ).unwrap()
+                )?
             }
             CommandType::PUSH | CommandType::POP => {
                 code_writer.write_push_pop(
                     parser.command_type(),
                     Segment::from(&parser.arg1()).unwrap(),
                     &parser.arg2().parse::<i32>().unwrap(),
-                ).unwrap()
+                )?
             }
         }
     }
