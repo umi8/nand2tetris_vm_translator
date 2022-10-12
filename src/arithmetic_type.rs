@@ -23,6 +23,7 @@ impl ArithmeticType {
             "and" => Ok(ArithmeticType::AND),
             "or" => Ok(ArithmeticType::OR),
             "not" => Ok(ArithmeticType::NOT),
+            // todo: IllegalArgumentExceptionみたいにしたい
             &_ => Err("Not type")
         };
     }
