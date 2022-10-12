@@ -41,6 +41,6 @@ fn main() -> std::io::Result<()> {
         }
     }
 
-    println!("File compilation succeeded: Prog.hack");
+    println!("File translation succeeded: File.asm");
     Ok(())
 }
