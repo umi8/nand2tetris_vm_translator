@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Error};
 
 use regex::Regex;
 
@@ -11,19 +11,13 @@ pub struct Parser {
 }
 
 impl Parser {
-    pub fn new(file_path: &str) -> Result<Self, &'static str> {
-        let asm = File::open(file_path);
-
-        match asm {
-            Ok(file) => {
-                let reader = BufReader::new(file);
-                Ok(Parser {
-                    reader,
-                    command: "".parse().unwrap(),
-                })
-            }
-            Err(_) => Err("file error"),
-        }
+    pub fn new(file_path: &str) -> Result<Self, Error> {
+        let vm_file = File::open(file_path)?;
+        let reader = BufReader::new(vm_file);
+        Ok(Parser {
+            reader,
+            command: String::new(),
+        })
     }
 
     pub fn has_more_commands(&mut self) -> bool {

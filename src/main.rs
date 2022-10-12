@@ -16,7 +16,7 @@ mod segment;
 fn main() -> std::io::Result<()> {
     let mut parser = match Parser::new("File.vm") {
         Ok(parser) => parser,
-        Err(why) => panic!("couldn't parse: {}", why)
+        Err(why) => panic!("couldn't open file: {}", why)
     };
 
     let mut code_writer = match CodeWriter::new("File.asm") {
