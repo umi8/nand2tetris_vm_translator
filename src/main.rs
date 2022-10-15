@@ -23,7 +23,7 @@ fn main() -> Result<(), MyError> {
         match parser.command_type() {
             CommandType::ARITHMETIC => {
                 code_writer.write_arithmetic(
-                    ArithmeticType::from(&parser.arg1()).unwrap()
+                    ArithmeticType::from(&parser.arg1())?
                 )?
             }
             CommandType::PUSH | CommandType::POP => {
