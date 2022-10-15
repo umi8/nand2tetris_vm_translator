@@ -30,7 +30,7 @@ fn main() -> Result<(), MyError> {
                 code_writer.write_push_pop(
                     parser.command_type()?,
                     Segment::from(&parser.arg1()?)?,
-                    &parser.arg2().parse::<i32>().unwrap(),
+                    &parser.arg2().parse::<i32>()?,
                 )?
             }
         }
