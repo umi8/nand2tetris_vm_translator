@@ -29,6 +29,10 @@ impl ArithmeticType {
         };
     }
 
+    pub fn exists(command: &str) -> bool {
+        ArithmeticType::from(command).is_ok()
+    }
+
     pub fn is_comparison_type(&self) -> bool {
         return match self {
             ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT => true,
@@ -90,5 +94,10 @@ mod tests {
     #[test]
     fn return_error() {
         assert!(ArithmeticType::from("hoge").is_err())
+    }
+
+    #[test]
+    fn true_if_command_exists() {
+        assert!(ArithmeticType::exists("add"))
     }
 }

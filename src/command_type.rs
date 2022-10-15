@@ -1,3 +1,6 @@
+use crate::ArithmeticType;
+use crate::my_error::IllegalArgumentError;
+
 #[derive(Debug, PartialEq)]
 pub enum CommandType {
     ARITHMETIC,
@@ -6,13 +9,17 @@ pub enum CommandType {
 }
 
 impl CommandType {
-    pub fn from(command: &str) -> CommandType {
-        return if command.eq("push") {
-            CommandType::PUSH
-        } else if command.eq("pop") {
-            CommandType::POP
-        } else {
-            CommandType::ARITHMETIC
+    pub fn from(command: &str) -> Result<CommandType, IllegalArgumentError> {
+        return match command {
+            "push" => Ok(CommandType::PUSH),
+            "pop" => Ok(CommandType::POP),
+            &_ => {
+                if ArithmeticType::exists(command) {
+                    Ok(CommandType::ARITHMETIC)
+                } else {
+                    Err(IllegalArgumentError)
+                }
+            }
         }
     }
 }
@@ -23,16 +30,21 @@ mod tests {
 
     #[test]
     fn return_type_arithmetic() {
-        assert_eq!(CommandType::ARITHMETIC, CommandType::from("add"))
+        assert_eq!(CommandType::ARITHMETIC, CommandType::from("add").unwrap())
     }
 
     #[test]
     fn return_type_push() {
-        assert_eq!(CommandType::PUSH, CommandType::from("push"))
+        assert_eq!(CommandType::PUSH, CommandType::from("push").unwrap())
     }
 
     #[test]
     fn return_type_pop() {
-        assert_eq!(CommandType::POP, CommandType::from("pop"))
+        assert_eq!(CommandType::POP, CommandType::from("pop").unwrap())
+    }
+
+    #[test]
+    fn return_error() {
+        assert!(CommandType::from("subb").is_err())
     }
 }

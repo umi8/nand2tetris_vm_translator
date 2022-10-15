@@ -20,16 +20,16 @@ fn main() -> Result<(), MyError> {
     let mut code_writer = CodeWriter::new("File.asm")?;
 
     while parser.has_more_commands() {
-        match parser.command_type() {
+        match parser.command_type()? {
             CommandType::ARITHMETIC => {
                 code_writer.write_arithmetic(
-                    ArithmeticType::from(&parser.arg1())?
+                    ArithmeticType::from(&parser.arg1()?)?
                 )?
             }
             CommandType::PUSH | CommandType::POP => {
                 code_writer.write_push_pop(
-                    parser.command_type(),
-                    Segment::from(&parser.arg1()).unwrap(),
+                    parser.command_type()?,
+                    Segment::from(&parser.arg1()?).unwrap(),
                     &parser.arg2().parse::<i32>().unwrap(),
                 )?
             }
