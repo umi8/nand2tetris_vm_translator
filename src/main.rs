@@ -29,7 +29,7 @@ fn main() -> Result<(), MyError> {
             CommandType::PUSH | CommandType::POP => {
                 code_writer.write_push_pop(
                     parser.command_type()?,
-                    Segment::from(&parser.arg1()?).unwrap(),
+                    Segment::from(&parser.arg1()?)?,
                     &parser.arg2().parse::<i32>().unwrap(),
                 )?
             }
