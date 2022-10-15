@@ -4,6 +4,7 @@ use std::io::{BufRead, BufReader, Error};
 use regex::Regex;
 
 use crate::command_type::CommandType;
+use crate::my_error::IllegalArgumentError;
 
 pub struct Parser {
     reader: BufReader<File>,
@@ -40,17 +41,17 @@ impl Parser {
         }
     }
 
-    pub fn command_type(&self) -> CommandType {
+    pub fn command_type(&self) -> Result<CommandType, IllegalArgumentError> {
         let commands: Vec<&str> = self.command.split_whitespace().collect();
         CommandType::from(commands[0])
     }
 
-    pub fn arg1(&self) -> &str {
-        return match self.command_type() {
-            CommandType::ARITHMETIC => { &self.command }
+    pub fn arg1(&self) -> Result<&str, IllegalArgumentError> {
+        return match self.command_type()? {
+            CommandType::ARITHMETIC => { Ok(&self.command) }
             CommandType::PUSH | CommandType::POP => {
                 let commands: Vec<&str> = self.command.split_whitespace().collect();
-                commands[1]
+                Ok(commands[1])
             }
         }
     }

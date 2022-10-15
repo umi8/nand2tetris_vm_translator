@@ -1,3 +1,5 @@
+use crate::my_error::IllegalArgumentError;
+
 #[derive(Debug, PartialEq)]
 pub enum Segment {
     CONSTANT,
@@ -11,7 +13,7 @@ pub enum Segment {
 }
 
 impl Segment {
-    pub fn from(segment: &str) -> Result<Self, &'static str> {
+    pub fn from(segment: &str) -> Result<Segment, IllegalArgumentError> {
         return match segment {
             "constant" => Ok(Segment::CONSTANT),
             "local" => Ok(Segment::LOCAL),
@@ -21,7 +23,7 @@ impl Segment {
             "temp" => Ok(Segment::TEMP),
             "pointer" => Ok(Segment::POINTER),
             "static" => Ok(Segment::STATIC),
-            &_ => Err("Illegal Argument")
+            &_ => Err(IllegalArgumentError)
         }
     }
 }

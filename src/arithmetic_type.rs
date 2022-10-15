@@ -1,3 +1,5 @@
+use crate::my_error::IllegalArgumentError;
+
 #[derive(Debug, PartialEq)]
 pub enum ArithmeticType {
     ADD,
@@ -12,7 +14,7 @@ pub enum ArithmeticType {
 }
 
 impl ArithmeticType {
-    pub fn from(command: &str) -> Result<ArithmeticType, &'static str> {
+    pub fn from(command: &str) -> Result<ArithmeticType, IllegalArgumentError> {
         return match command {
             "add" => Ok(ArithmeticType::ADD),
             "sub" => Ok(ArithmeticType::SUB),
@@ -23,9 +25,12 @@ impl ArithmeticType {
             "and" => Ok(ArithmeticType::AND),
             "or" => Ok(ArithmeticType::OR),
             "not" => Ok(ArithmeticType::NOT),
-            // todo: IllegalArgumentExceptionみたいにしたい
-            &_ => Err("Not type")
+            &_ => Err(IllegalArgumentError)
         };
+    }
+
+    pub fn exists(command: &str) -> bool {
+        ArithmeticType::from(command).is_ok()
     }
 
     pub fn is_comparison_type(&self) -> bool {
@@ -89,5 +94,10 @@ mod tests {
     #[test]
     fn return_error() {
         assert!(ArithmeticType::from("hoge").is_err())
+    }
+
+    #[test]
+    fn true_if_command_exists() {
+        assert!(ArithmeticType::exists("add"))
     }
 }
