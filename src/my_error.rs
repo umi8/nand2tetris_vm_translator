@@ -1,6 +1,6 @@
-use std::{error, fmt};
 use std::fmt::Formatter;
 use std::num::ParseIntError;
+use std::{error, fmt};
 
 #[derive(Debug)]
 pub enum MyError {
@@ -16,7 +16,9 @@ impl fmt::Display for MyError {
             MyError::Io(cause) => write!(f, "I/O Error: {}", cause),
             MyError::Fmt(cause) => write!(f, "Format Error : {}", cause),
             MyError::IllegalArgument(cause) => write!(f, "Illegal Argument Error : {}", cause),
-            MyError::ParseInt(cause) => { write!(f, "Parse Int Error: {}", cause) }
+            MyError::ParseInt(cause) => {
+                write!(f, "Parse Int Error: {}", cause)
+            }
         }
     }
 }

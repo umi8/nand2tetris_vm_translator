@@ -1,29 +1,29 @@
 use crate::my_error::IllegalArgumentError;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Segment {
-    CONSTANT,
-    LOCAL,
-    ARGUMENT,
-    THIS,
-    THAT,
-    TEMP,
-    POINTER,
-    STATIC
+    Constant,
+    Local,
+    Argument,
+    This,
+    That,
+    Temp,
+    Pointer,
+    Static,
 }
 
 impl Segment {
     pub fn from(segment: &str) -> Result<Segment, IllegalArgumentError> {
-        return match segment {
-            "constant" => Ok(Segment::CONSTANT),
-            "local" => Ok(Segment::LOCAL),
-            "argument" => Ok(Segment::ARGUMENT),
-            "this" => Ok(Segment::THIS),
-            "that" => Ok(Segment::THAT),
-            "temp" => Ok(Segment::TEMP),
-            "pointer" => Ok(Segment::POINTER),
-            "static" => Ok(Segment::STATIC),
-            &_ => Err(IllegalArgumentError)
+        match segment {
+            "constant" => Ok(Segment::Constant),
+            "local" => Ok(Segment::Local),
+            "argument" => Ok(Segment::Argument),
+            "this" => Ok(Segment::This),
+            "that" => Ok(Segment::That),
+            "temp" => Ok(Segment::Temp),
+            "pointer" => Ok(Segment::Pointer),
+            "static" => Ok(Segment::Static),
+            &_ => Err(IllegalArgumentError),
         }
     }
 }
@@ -35,42 +35,42 @@ mod tests {
 
     #[test]
     fn return_constant() {
-        assert_eq!(CONSTANT, Segment::from("constant").unwrap())
+        assert_eq!(Constant, Segment::from("constant").unwrap())
     }
 
     #[test]
     fn return_local() {
-        assert_eq!(LOCAL, Segment::from("local").unwrap())
+        assert_eq!(Local, Segment::from("local").unwrap())
     }
 
     #[test]
     fn return_argument() {
-        assert_eq!(ARGUMENT, Segment::from("argument").unwrap())
+        assert_eq!(Argument, Segment::from("argument").unwrap())
     }
 
     #[test]
     fn return_this() {
-        assert_eq!(THIS, Segment::from("this").unwrap())
+        assert_eq!(This, Segment::from("this").unwrap())
     }
 
     #[test]
     fn return_that() {
-        assert_eq!(THAT, Segment::from("that").unwrap())
+        assert_eq!(That, Segment::from("that").unwrap())
     }
 
     #[test]
     fn return_temp() {
-        assert_eq!(TEMP, Segment::from("temp").unwrap())
+        assert_eq!(Temp, Segment::from("temp").unwrap())
     }
 
     #[test]
     fn return_pointer() {
-        assert_eq!(POINTER, Segment::from("pointer").unwrap())
+        assert_eq!(Pointer, Segment::from("pointer").unwrap())
     }
 
     #[test]
     fn return_static() {
-        assert_eq!(STATIC, Segment::from("static").unwrap())
+        assert_eq!(Static, Segment::from("static").unwrap())
     }
 
     #[test]

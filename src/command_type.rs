@@ -1,21 +1,21 @@
-use crate::ArithmeticType;
 use crate::my_error::IllegalArgumentError;
+use crate::ArithmeticType;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum CommandType {
-    ARITHMETIC,
-    PUSH,
-    POP,
+    Arithmetic,
+    Push,
+    Pop,
 }
 
 impl CommandType {
     pub fn from(command: &str) -> Result<CommandType, IllegalArgumentError> {
-        return match command {
-            "push" => Ok(CommandType::PUSH),
-            "pop" => Ok(CommandType::POP),
+        match command {
+            "push" => Ok(CommandType::Push),
+            "pop" => Ok(CommandType::Pop),
             &_ => {
                 if ArithmeticType::exists(command) {
-                    Ok(CommandType::ARITHMETIC)
+                    Ok(CommandType::Arithmetic)
                 } else {
                     Err(IllegalArgumentError)
                 }
@@ -30,17 +30,17 @@ mod tests {
 
     #[test]
     fn return_type_arithmetic() {
-        assert_eq!(CommandType::ARITHMETIC, CommandType::from("add").unwrap())
+        assert_eq!(CommandType::Arithmetic, CommandType::from("add").unwrap())
     }
 
     #[test]
     fn return_type_push() {
-        assert_eq!(CommandType::PUSH, CommandType::from("push").unwrap())
+        assert_eq!(CommandType::Push, CommandType::from("push").unwrap())
     }
 
     #[test]
     fn return_type_pop() {
-        assert_eq!(CommandType::POP, CommandType::from("pop").unwrap())
+        assert_eq!(CommandType::Pop, CommandType::from("pop").unwrap())
     }
 
     #[test]
