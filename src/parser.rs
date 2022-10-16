@@ -48,8 +48,8 @@ impl Parser {
 
     pub fn arg1(&self) -> Result<&str, IllegalArgumentError> {
         return match self.command_type()? {
-            CommandType::ARITHMETIC => Ok(&self.command),
-            CommandType::PUSH | CommandType::POP => {
+            CommandType::Arithmetic => Ok(&self.command),
+            CommandType::Push | CommandType::Pop => {
                 let commands: Vec<&str> = self.command.split_whitespace().collect();
                 Ok(commands[1])
             }

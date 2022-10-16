@@ -21,10 +21,10 @@ fn main() -> Result<(), MyError> {
 
     while parser.has_more_commands() {
         match parser.command_type()? {
-            CommandType::ARITHMETIC => {
+            CommandType::Arithmetic => {
                 code_writer.write_arithmetic(ArithmeticType::from(&parser.arg1()?)?)?
             }
-            CommandType::PUSH | CommandType::POP => code_writer.write_push_pop(
+            CommandType::Push | CommandType::Pop => code_writer.write_push_pop(
                 parser.command_type()?,
                 Segment::from(&parser.arg1()?)?,
                 &parser.arg2().parse::<i32>()?,

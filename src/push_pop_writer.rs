@@ -5,9 +5,9 @@ use crate::CommandType;
 
 pub fn write(command: CommandType, segment: Segment, index: &i32) -> Result<String, Error> {
     let mut s = String::new();
-    if command == CommandType::PUSH {
+    if command == CommandType::Push {
         push(&mut s, segment, index)?;
-    } else if command == CommandType::POP {
+    } else if command == CommandType::Pop {
         pop(&mut s, segment, index)?;
     }
     Ok(s)
