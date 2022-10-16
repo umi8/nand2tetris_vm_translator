@@ -46,4 +46,12 @@ impl CodeWriter {
         )?;
         Ok(())
     }
+
+    pub fn write_label(&mut self, label: &str) -> Result<(), MyError> {
+        Ok(())
+    }
+
+    pub fn write_if(&mut self, label: &str) -> Result<(), MyError> {
+        Ok(())
+    }
 }

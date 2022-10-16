@@ -29,6 +29,8 @@ fn main() -> Result<(), MyError> {
                 Segment::from(parser.arg1()?)?,
                 &parser.arg2().parse::<i32>()?,
             )?,
+            CommandType::Label => code_writer.write_label(parser.arg1()?)?,
+            CommandType::Ifgoto => code_writer.write_if(parser.arg1()?)?,
         }
     }
 
