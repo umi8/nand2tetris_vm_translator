@@ -26,5 +26,5 @@ jobs:
         run: cargo test --verbose
       - name: Format check
         run: cargo fmt --all --check
-      - name: Static analysis
-        run: cargo clippy
+      - name: Static analysis (also fail in case of warnings)
+        run: cargo clippy -- --deny warnings
