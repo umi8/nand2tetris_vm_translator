@@ -48,6 +48,7 @@ impl CodeWriter {
     }
 
     pub fn write_label(&mut self, label: &str) -> Result<(), MyError> {
+        writeln!(&mut self.file, "({})", label)?;
         Ok(())
     }
 
