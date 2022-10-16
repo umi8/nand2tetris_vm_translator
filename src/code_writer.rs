@@ -66,4 +66,8 @@ impl CodeWriter {
         writeln!(&mut self.file, "D;JNE")?;
         Ok(())
     }
+
+    pub fn write_goto(&mut self, label: &str) -> Result<(), MyError> {
+        Ok(())
+    }
 }
