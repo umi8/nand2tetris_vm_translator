@@ -22,9 +22,9 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Build
         run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
       - name: Format check
         run: cargo fmt --all --check
       - name: Static analysis (also fail in case of warnings)
         run: cargo clippy -- --deny warnings
+      - name: Run tests
+        run: cargo test --verbose
