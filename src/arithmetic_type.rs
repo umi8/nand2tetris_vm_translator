@@ -2,31 +2,31 @@ use crate::my_error::IllegalArgumentError;
 
 #[derive(Debug, PartialEq)]
 pub enum ArithmeticType {
-    ADD,
-    SUB,
-    NEG,
+    Add,
+    Sub,
+    Neg,
     EQ,
     GT,
     LT,
-    AND,
+    And,
     OR,
-    NOT,
+    Not,
 }
 
 impl ArithmeticType {
     pub fn from(command: &str) -> Result<ArithmeticType, IllegalArgumentError> {
-        return match command {
-            "add" => Ok(ArithmeticType::ADD),
-            "sub" => Ok(ArithmeticType::SUB),
-            "neg" => Ok(ArithmeticType::NEG),
+        match command {
+            "add" => Ok(ArithmeticType::Add),
+            "sub" => Ok(ArithmeticType::Sub),
+            "neg" => Ok(ArithmeticType::Neg),
             "eq" => Ok(ArithmeticType::EQ),
             "gt" => Ok(ArithmeticType::GT),
             "lt" => Ok(ArithmeticType::LT),
-            "and" => Ok(ArithmeticType::AND),
+            "and" => Ok(ArithmeticType::And),
             "or" => Ok(ArithmeticType::OR),
-            "not" => Ok(ArithmeticType::NOT),
+            "not" => Ok(ArithmeticType::Not),
             &_ => Err(IllegalArgumentError),
-        };
+        }
     }
 
     pub fn exists(command: &str) -> bool {
@@ -34,10 +34,10 @@ impl ArithmeticType {
     }
 
     pub fn is_comparison_type(&self) -> bool {
-        return match self {
-            ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT => true,
-            _ => false,
-        };
+        matches!(
+            self,
+            ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT
+        )
     }
 }
 
@@ -48,17 +48,17 @@ mod tests {
 
     #[test]
     fn return_add_type() {
-        assert_eq!(ADD, ArithmeticType::from("add").unwrap())
+        assert_eq!(Add, ArithmeticType::from("add").unwrap())
     }
 
     #[test]
     fn return_sub_type() {
-        assert_eq!(SUB, ArithmeticType::from("sub").unwrap())
+        assert_eq!(Sub, ArithmeticType::from("sub").unwrap())
     }
 
     #[test]
     fn return_neg_type() {
-        assert_eq!(NEG, ArithmeticType::from("neg").unwrap())
+        assert_eq!(Neg, ArithmeticType::from("neg").unwrap())
     }
 
     #[test]
@@ -78,7 +78,7 @@ mod tests {
 
     #[test]
     fn return_and_type() {
-        assert_eq!(AND, ArithmeticType::from("and").unwrap())
+        assert_eq!(And, ArithmeticType::from("and").unwrap())
     }
 
     #[test]
@@ -88,7 +88,7 @@ mod tests {
 
     #[test]
     fn return_not_type() {
-        assert_eq!(NOT, ArithmeticType::from("not").unwrap())
+        assert_eq!(Not, ArithmeticType::from("not").unwrap())
     }
 
     #[test]

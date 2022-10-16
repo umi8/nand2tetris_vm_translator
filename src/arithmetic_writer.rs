@@ -5,15 +5,15 @@ use crate::arithmetic_type::ArithmeticType;
 pub fn write(command: &ArithmeticType, comparison_counter: i32) -> Result<String, Error> {
     let mut s = String::new();
     match command {
-        ArithmeticType::ADD => add(&mut s),
-        ArithmeticType::SUB => sub(&mut s),
-        ArithmeticType::NEG => neg(&mut s),
+        ArithmeticType::Add => add(&mut s),
+        ArithmeticType::Sub => sub(&mut s),
+        ArithmeticType::Neg => neg(&mut s),
         ArithmeticType::EQ => eq(&mut s, comparison_counter),
         ArithmeticType::GT => gt(&mut s, comparison_counter),
         ArithmeticType::LT => lt(&mut s, comparison_counter),
-        ArithmeticType::AND => and(&mut s),
+        ArithmeticType::And => and(&mut s),
         ArithmeticType::OR => or(&mut s),
-        ArithmeticType::NOT => not(&mut s),
+        ArithmeticType::Not => not(&mut s),
     }?;
     Ok(s)
 }
