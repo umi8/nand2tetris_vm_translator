@@ -53,6 +53,17 @@ impl CodeWriter {
     }
 
     pub fn write_if(&mut self, label: &str) -> Result<(), MyError> {
+        // decrement stack pointer
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=M-1")?;
+        // set memory address to stack pointer
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "A=M")?;
+        // store top of stack value in D register
+        writeln!(&mut self.file, "D=M")?;
+        // if D != 0 goto label
+        writeln!(&mut self.file, "@{}", label)?;
+        writeln!(&mut self.file, "D;JNE")?;
         Ok(())
     }
 }
