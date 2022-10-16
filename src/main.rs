@@ -5,12 +5,12 @@ use crate::my_error::MyError;
 use crate::parser::Parser;
 use crate::segment::Segment;
 
-mod command_type;
-mod code_writer;
-mod parser;
 mod arithmetic_type;
 mod arithmetic_writer;
+mod code_writer;
+mod command_type;
 mod my_error;
+mod parser;
 mod push_pop_writer;
 mod segment;
 
@@ -22,17 +22,13 @@ fn main() -> Result<(), MyError> {
     while parser.has_more_commands() {
         match parser.command_type()? {
             CommandType::ARITHMETIC => {
-                code_writer.write_arithmetic(
-                    ArithmeticType::from(&parser.arg1()?)?
-                )?
+                code_writer.write_arithmetic(ArithmeticType::from(&parser.arg1()?)?)?
             }
-            CommandType::PUSH | CommandType::POP => {
-                code_writer.write_push_pop(
-                    parser.command_type()?,
-                    Segment::from(&parser.arg1()?)?,
-                    &parser.arg2().parse::<i32>()?,
-                )?
-            }
+            CommandType::PUSH | CommandType::POP => code_writer.write_push_pop(
+                parser.command_type()?,
+                Segment::from(&parser.arg1()?)?,
+                &parser.arg2().parse::<i32>()?,
+            )?,
         }
     }
 

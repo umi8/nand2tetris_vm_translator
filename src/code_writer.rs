@@ -1,11 +1,11 @@
 use std::fs::File;
 use std::io::{Error, Write};
 
-use crate::{arithmetic_writer, push_pop_writer};
 use crate::arithmetic_type::ArithmeticType;
-use crate::CommandType;
 use crate::my_error::MyError;
 use crate::segment::Segment;
+use crate::CommandType;
+use crate::{arithmetic_writer, push_pop_writer};
 
 pub struct CodeWriter {
     file: File,
@@ -22,16 +22,28 @@ impl CodeWriter {
     }
 
     pub fn write_arithmetic(&mut self, arithmetic_command: ArithmeticType) -> Result<(), MyError> {
-        write!(&mut self.file, "{}", arithmetic_writer::write(&arithmetic_command, self.comparison_counter)?)?;
+        write!(
+            &mut self.file,
+            "{}",
+            arithmetic_writer::write(&arithmetic_command, self.comparison_counter)?
+        )?;
         if arithmetic_command.is_comparison_type() {
             self.comparison_counter += 1;
         }
         Ok(())
     }
 
-    pub fn write_push_pop(&mut self, command: CommandType, segment: Segment, index: &i32) -> Result<(), MyError> {
-        write!(&mut self.file, "{}", push_pop_writer::write(command, segment, index)?)?;
+    pub fn write_push_pop(
+        &mut self,
+        command: CommandType,
+        segment: Segment,
+        index: &i32,
+    ) -> Result<(), MyError> {
+        write!(
+            &mut self.file,
+            "{}",
+            push_pop_writer::write(command, segment, index)?
+        )?;
         Ok(())
     }
-
 }

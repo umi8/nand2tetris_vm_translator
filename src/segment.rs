@@ -9,7 +9,7 @@ pub enum Segment {
     THAT,
     TEMP,
     POINTER,
-    STATIC
+    STATIC,
 }
 
 impl Segment {
@@ -23,8 +23,8 @@ impl Segment {
             "temp" => Ok(Segment::TEMP),
             "pointer" => Ok(Segment::POINTER),
             "static" => Ok(Segment::STATIC),
-            &_ => Err(IllegalArgumentError)
-        }
+            &_ => Err(IllegalArgumentError),
+        };
     }
 }
 

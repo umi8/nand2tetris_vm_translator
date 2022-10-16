@@ -1,7 +1,7 @@
 use std::fmt::{Error, Write};
 
-use crate::CommandType;
 use crate::segment::Segment;
+use crate::CommandType;
 
 pub fn write(command: CommandType, segment: Segment, index: &i32) -> Result<String, Error> {
     let mut s = String::new();
@@ -41,12 +41,16 @@ fn pop(s: &mut String, segment: Segment, index: &i32) -> Result<(), Error> {
     Ok(())
 }
 
-fn store_index_of_segment_in_d_register(s: &mut String, segment: Segment, index: &i32) -> Result<(), Error> {
+fn store_index_of_segment_in_d_register(
+    s: &mut String,
+    segment: Segment,
+    index: &i32,
+) -> Result<(), Error> {
     match segment {
         Segment::CONSTANT => {
             writeln!(s, "@{}", index)?;
             writeln!(s, "D=A")?;
-        },
+        }
         Segment::LOCAL => {
             writeln!(s, "@LCL")?;
             writeln!(s, "D=M")?;
@@ -54,7 +58,7 @@ fn store_index_of_segment_in_d_register(s: &mut String, segment: Segment, index:
             writeln!(s, "D=D+A")?;
             writeln!(s, "A=D")?;
             writeln!(s, "D=M")?;
-        },
+        }
         Segment::ARGUMENT => {
             writeln!(s, "@ARG")?;
             writeln!(s, "D=M")?;
@@ -62,7 +66,7 @@ fn store_index_of_segment_in_d_register(s: &mut String, segment: Segment, index:
             writeln!(s, "D=D+A")?;
             writeln!(s, "A=D")?;
             writeln!(s, "D=M")?;
-        },
+        }
         Segment::THIS => {
             writeln!(s, "@THIS")?;
             writeln!(s, "D=M")?;
@@ -70,7 +74,7 @@ fn store_index_of_segment_in_d_register(s: &mut String, segment: Segment, index:
             writeln!(s, "D=D+A")?;
             writeln!(s, "A=D")?;
             writeln!(s, "D=M")?;
-        },
+        }
         Segment::THAT => {
             writeln!(s, "@THAT")?;
             writeln!(s, "D=M")?;
@@ -78,7 +82,7 @@ fn store_index_of_segment_in_d_register(s: &mut String, segment: Segment, index:
             writeln!(s, "D=D+A")?;
             writeln!(s, "A=D")?;
             writeln!(s, "D=M")?;
-        },
+        }
         Segment::TEMP => {
             writeln!(s, "@5")?;
             writeln!(s, "D=A")?;
@@ -86,7 +90,7 @@ fn store_index_of_segment_in_d_register(s: &mut String, segment: Segment, index:
             writeln!(s, "D=D+A")?;
             writeln!(s, "A=D")?;
             writeln!(s, "D=M")?;
-        },
+        }
         Segment::POINTER => {
             if *index == 0 {
                 writeln!(s, "@THIS")?;
@@ -94,7 +98,7 @@ fn store_index_of_segment_in_d_register(s: &mut String, segment: Segment, index:
                 writeln!(s, "@THAT")?;
             }
             writeln!(s, "D=M")?;
-        },
+        }
         Segment::STATIC => {
             writeln!(s, "@16")?;
             writeln!(s, "D=A")?;
@@ -107,7 +111,11 @@ fn store_index_of_segment_in_d_register(s: &mut String, segment: Segment, index:
     Ok(())
 }
 
-fn store_dest_address_in_d_register(s: &mut String, segment: Segment, index: &i32) -> Result<(), Error> {
+fn store_dest_address_in_d_register(
+    s: &mut String,
+    segment: Segment,
+    index: &i32,
+) -> Result<(), Error> {
     match segment {
         Segment::CONSTANT => {} // do nothing
         Segment::LOCAL => {
@@ -115,31 +123,31 @@ fn store_dest_address_in_d_register(s: &mut String, segment: Segment, index: &i3
             writeln!(s, "D=M")?;
             writeln!(s, "@{}", index)?;
             writeln!(s, "D=D+A")?;
-        },
+        }
         Segment::ARGUMENT => {
             writeln!(s, "@ARG")?;
             writeln!(s, "D=M")?;
             writeln!(s, "@{}", index)?;
             writeln!(s, "D=D+A")?;
-        },
+        }
         Segment::THIS => {
             writeln!(s, "@THIS")?;
             writeln!(s, "D=M")?;
             writeln!(s, "@{}", index)?;
             writeln!(s, "D=D+A")?;
-        },
+        }
         Segment::THAT => {
             writeln!(s, "@THAT")?;
             writeln!(s, "D=M")?;
             writeln!(s, "@{}", index)?;
             writeln!(s, "D=D+A")?;
-        },
+        }
         Segment::TEMP => {
             writeln!(s, "@5")?;
             writeln!(s, "D=A")?;
             writeln!(s, "@{}", index)?;
             writeln!(s, "D=D+A")?;
-        },
+        }
         Segment::POINTER => {
             if *index == 0 {
                 writeln!(s, "@THIS")?;
@@ -147,7 +155,7 @@ fn store_dest_address_in_d_register(s: &mut String, segment: Segment, index: &i3
                 writeln!(s, "@THAT")?;
             }
             writeln!(s, "D=A")?;
-        },
+        }
         Segment::STATIC => {
             writeln!(s, "@16")?;
             writeln!(s, "D=A")?;

@@ -1,5 +1,5 @@
-use crate::ArithmeticType;
 use crate::my_error::IllegalArgumentError;
+use crate::ArithmeticType;
 
 #[derive(Debug, PartialEq)]
 pub enum CommandType {
@@ -20,7 +20,7 @@ impl CommandType {
                     Err(IllegalArgumentError)
                 }
             }
-        }
+        };
     }
 }
 

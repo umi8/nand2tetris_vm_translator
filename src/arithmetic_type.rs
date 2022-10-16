@@ -25,7 +25,7 @@ impl ArithmeticType {
             "and" => Ok(ArithmeticType::AND),
             "or" => Ok(ArithmeticType::OR),
             "not" => Ok(ArithmeticType::NOT),
-            &_ => Err(IllegalArgumentError)
+            &_ => Err(IllegalArgumentError),
         };
     }
 
@@ -36,8 +36,8 @@ impl ArithmeticType {
     pub fn is_comparison_type(&self) -> bool {
         return match self {
             ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT => true,
-            _ => false
-        }
+            _ => false,
+        };
     }
 }
 
