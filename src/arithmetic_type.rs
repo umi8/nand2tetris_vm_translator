@@ -1,6 +1,6 @@
 use crate::my_error::IllegalArgumentError;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ArithmeticType {
     Add,
     Sub,

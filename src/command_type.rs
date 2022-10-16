@@ -1,7 +1,7 @@
 use crate::my_error::IllegalArgumentError;
 use crate::ArithmeticType;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum CommandType {
     Arithmetic,
     Push,
