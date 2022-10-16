@@ -15,7 +15,7 @@ mod push_pop_writer;
 mod segment;
 
 fn main() -> Result<(), MyError> {
-    let mut parser = Parser::new("File.vsm")?;
+    let mut parser = Parser::new("File.vm")?;
 
     let mut code_writer = CodeWriter::new("File.asm")?;
 
