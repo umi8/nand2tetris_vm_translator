@@ -15,7 +15,7 @@ mod push_pop_writer;
 mod segment;
 
 fn main() -> Result<(), MyError> {
-    let mut parser = Parser::new("File.vsm")?;
+    let mut parser = Parser::new("File.vm")?;
 
     let mut code_writer = CodeWriter::new("File.asm")?;
 
@@ -29,6 +29,8 @@ fn main() -> Result<(), MyError> {
                 Segment::from(parser.arg1()?)?,
                 &parser.arg2().parse::<i32>()?,
             )?,
+            CommandType::Label => code_writer.write_label(parser.arg1()?)?,
+            CommandType::Ifgoto => code_writer.write_if(parser.arg1()?)?,
         }
     }
 
