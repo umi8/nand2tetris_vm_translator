@@ -72,4 +72,12 @@ impl CodeWriter {
         writeln!(&mut self.file, "0;JMP")?;
         Ok(())
     }
+
+    pub fn write_return(&mut self) -> Result<(), MyError> {
+        Ok(())
+    }
+
+    pub fn write_function(&mut self, function_name: &str, num_locals: i32) -> Result<(), MyError> {
+        Ok(())
+    }
 }

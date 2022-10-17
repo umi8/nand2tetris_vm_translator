@@ -32,6 +32,10 @@ fn main() -> Result<(), MyError> {
             CommandType::Label => code_writer.write_label(parser.arg1()?)?,
             CommandType::Ifgoto => code_writer.write_if(parser.arg1()?)?,
             CommandType::Goto => code_writer.write_goto(parser.arg1()?)?,
+            CommandType::Function => {
+                code_writer.write_function(parser.arg1()?, parser.arg2().parse::<i32>()?)?
+            }
+            CommandType::Return => code_writer.write_return()?,
         }
     }
 
