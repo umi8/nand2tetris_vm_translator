@@ -7,7 +7,7 @@ pub enum CommandType {
     Push,
     Pop,
     Label,
-    Ifgoto,
+    IfGoto,
     Goto,
     Function,
     Return,
@@ -19,7 +19,7 @@ impl CommandType {
             "push" => Ok(CommandType::Push),
             "pop" => Ok(CommandType::Pop),
             "label" => Ok(CommandType::Label),
-            "if-goto" => Ok(CommandType::Ifgoto),
+            "if-goto" => Ok(CommandType::IfGoto),
             "goto" => Ok(CommandType::Goto),
             "function" => Ok(CommandType::Function),
             "return" => Ok(CommandType::Return),
@@ -59,8 +59,8 @@ mod tests {
     }
 
     #[test]
-    fn return_type_ifgoto() {
-        assert_eq!(CommandType::Ifgoto, CommandType::from("if-goto").unwrap())
+    fn return_type_if_goto() {
+        assert_eq!(CommandType::IfGoto, CommandType::from("if-goto").unwrap())
     }
 
     #[test]
