@@ -78,6 +78,18 @@ impl CodeWriter {
     }
 
     pub fn write_function(&mut self, function_name: &str, num_locals: i32) -> Result<(), MyError> {
+        // declare function label
+        writeln!(&mut self.file, "({})", function_name)?;
+        // initialize with 0 for the number of local variables
+        for _n in 0..num_locals {
+            writeln!(&mut self.file, "@0")?;
+            writeln!(&mut self.file, "D=A")?;
+            writeln!(&mut self.file, "@SP")?;
+            writeln!(&mut self.file, "A=M")?;
+            writeln!(&mut self.file, "M=D")?;
+            writeln!(&mut self.file, "@SP")?;
+            writeln!(&mut self.file, "M=M+1")?;
+        }
         Ok(())
     }
 }
