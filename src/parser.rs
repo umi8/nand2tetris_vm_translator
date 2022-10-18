@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader, Error};
+use std::num::ParseIntError;
 
 use regex::Regex;
 
@@ -62,8 +63,8 @@ impl Parser {
         };
     }
 
-    pub fn arg2(&self) -> &str {
+    pub fn arg2(&self) -> Result<i32, ParseIntError> {
         let commands: Vec<&str> = self.command.split_whitespace().collect();
-        commands[2]
+        commands[2].parse::<i32>()
     }
 }
