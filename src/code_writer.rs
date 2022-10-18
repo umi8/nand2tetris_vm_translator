@@ -72,4 +72,103 @@ impl CodeWriter {
         writeln!(&mut self.file, "0;JMP")?;
         Ok(())
     }
+
+    pub fn write_return(&mut self) -> Result<(), MyError> {
+        // FRAME = LCL
+        writeln!(&mut self.file, "@LCL")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@R14")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // RET = *(FRAME-5)
+        writeln!(&mut self.file, "@R14")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@5")?;
+        writeln!(&mut self.file, "D=D-A")?;
+        writeln!(&mut self.file, "@R15")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // *ARG = pop()
+        writeln!(&mut self.file, "@ARG")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@R13")?;
+        writeln!(&mut self.file, "M=D")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=M-1")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "A=M")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@R13")?;
+        writeln!(&mut self.file, "A=M")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // SP = ARG+1
+        writeln!(&mut self.file, "@ARG")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=D+1")?;
+
+        // THAT = *(FRAME-1)
+        writeln!(&mut self.file, "@R14")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@1")?;
+        writeln!(&mut self.file, "D=D-A")?;
+        writeln!(&mut self.file, "A=D")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@THAT")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // THIS = *(FRAME-2)
+        writeln!(&mut self.file, "@R14")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@2")?;
+        writeln!(&mut self.file, "D=D-A")?;
+        writeln!(&mut self.file, "A=D")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@THIS")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // ARG = *(FRAME-3)
+        writeln!(&mut self.file, "@R14")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@3")?;
+        writeln!(&mut self.file, "D=D-A")?;
+        writeln!(&mut self.file, "A=D")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@ARG")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // LCL = *(FRAME-4)
+        writeln!(&mut self.file, "@R14")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@4")?;
+        writeln!(&mut self.file, "D=D-A")?;
+        writeln!(&mut self.file, "A=D")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@LCL")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // goto RET
+        writeln!(&mut self.file, "@R15")?;
+        writeln!(&mut self.file, "A=M")?;
+        writeln!(&mut self.file, "0;JMP")?;
+
+        Ok(())
+    }
+
+    pub fn write_function(&mut self, function_name: &str, num_locals: i32) -> Result<(), MyError> {
+        // declare function label
+        writeln!(&mut self.file, "({})", function_name)?;
+        // initialize with 0 for the number of local variables
+        for _n in 0..num_locals {
+            writeln!(&mut self.file, "@0")?;
+            writeln!(&mut self.file, "D=A")?;
+            writeln!(&mut self.file, "@SP")?;
+            writeln!(&mut self.file, "A=M")?;
+            writeln!(&mut self.file, "M=D")?;
+            writeln!(&mut self.file, "@SP")?;
+            writeln!(&mut self.file, "M=M+1")?;
+        }
+        Ok(())
+    }
 }

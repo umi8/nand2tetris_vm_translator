@@ -9,6 +9,8 @@ pub enum CommandType {
     Label,
     Ifgoto,
     Goto,
+    Function,
+    Return,
 }
 
 impl CommandType {
@@ -19,6 +21,8 @@ impl CommandType {
             "label" => Ok(CommandType::Label),
             "if-goto" => Ok(CommandType::Ifgoto),
             "goto" => Ok(CommandType::Goto),
+            "function" => Ok(CommandType::Function),
+            "return" => Ok(CommandType::Return),
             &_ => {
                 if ArithmeticType::exists(command) {
                     Ok(CommandType::Arithmetic)
@@ -62,6 +66,19 @@ mod tests {
     #[test]
     fn return_type_goto() {
         assert_eq!(CommandType::Goto, CommandType::from("goto").unwrap())
+    }
+
+    #[test]
+    fn return_type_function() {
+        assert_eq!(
+            CommandType::Function,
+            CommandType::from("function").unwrap()
+        )
+    }
+
+    #[test]
+    fn return_type_return() {
+        assert_eq!(CommandType::Return, CommandType::from("return").unwrap())
     }
 
     #[test]
