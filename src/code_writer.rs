@@ -52,6 +52,12 @@ impl CodeWriter {
         Ok(())
     }
 
+    pub fn write_goto(&mut self, label: &str) -> Result<(), MyError> {
+        writeln!(&mut self.file, "@{}", label)?;
+        writeln!(&mut self.file, "0;JMP")?;
+        Ok(())
+    }
+
     pub fn write_if(&mut self, label: &str) -> Result<(), MyError> {
         // decrement stack pointer
         writeln!(&mut self.file, "@SP")?;
@@ -64,12 +70,6 @@ impl CodeWriter {
         // if D != 0 goto label
         writeln!(&mut self.file, "@{}", label)?;
         writeln!(&mut self.file, "D;JNE")?;
-        Ok(())
-    }
-
-    pub fn write_goto(&mut self, label: &str) -> Result<(), MyError> {
-        writeln!(&mut self.file, "@{}", label)?;
-        writeln!(&mut self.file, "0;JMP")?;
         Ok(())
     }
 
