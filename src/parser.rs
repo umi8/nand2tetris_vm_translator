@@ -55,7 +55,8 @@ impl Parser {
             | CommandType::Label
             | CommandType::IfGoto
             | CommandType::Goto
-            | CommandType::Function => {
+            | CommandType::Function
+            | CommandType::Call => {
                 let commands: Vec<&str> = self.command.split_whitespace().collect();
                 Ok(commands[1])
             }

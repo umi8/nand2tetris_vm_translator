@@ -34,6 +34,7 @@ fn main() -> Result<(), MyError> {
             CommandType::Goto => code_writer.write_goto(parser.arg1()?)?,
             CommandType::Function => code_writer.write_function(parser.arg1()?, parser.arg2()?)?,
             CommandType::Return => code_writer.write_return()?,
+            CommandType::Call => code_writer.write_call(parser.arg1()?, parser.arg2()?)?,
         }
     }
 
