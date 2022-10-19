@@ -73,6 +73,10 @@ impl CodeWriter {
         Ok(())
     }
 
+    pub fn write_call(&mut self, _function_name: &str, _num_args: i32) -> Result<(), MyError> {
+        Ok(())
+    }
+
     pub fn write_return(&mut self) -> Result<(), MyError> {
         // FRAME = LCL
         writeln!(&mut self.file, "@LCL")?;
