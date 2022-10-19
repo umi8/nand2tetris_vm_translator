@@ -37,44 +37,16 @@ pub fn write() -> Result<String, Error> {
     writeln!(s, "M=D+1")?;
 
     // THAT = *(FRAME-1)
-    writeln!(s, "@R14")?;
-    writeln!(s, "D=M")?;
-    writeln!(s, "@1")?;
-    writeln!(s, "D=D-A")?;
-    writeln!(s, "A=D")?;
-    writeln!(s, "D=M")?;
-    writeln!(s, "@THAT")?;
-    writeln!(s, "M=D")?;
+    restore_caller_symbol(&mut s, "THAT", 1)?;
 
     // THIS = *(FRAME-2)
-    writeln!(s, "@R14")?;
-    writeln!(s, "D=M")?;
-    writeln!(s, "@2")?;
-    writeln!(s, "D=D-A")?;
-    writeln!(s, "A=D")?;
-    writeln!(s, "D=M")?;
-    writeln!(s, "@THIS")?;
-    writeln!(s, "M=D")?;
+    restore_caller_symbol(&mut s, "THIS", 2)?;
 
     // ARG = *(FRAME-3)
-    writeln!(s, "@R14")?;
-    writeln!(s, "D=M")?;
-    writeln!(s, "@3")?;
-    writeln!(s, "D=D-A")?;
-    writeln!(s, "A=D")?;
-    writeln!(s, "D=M")?;
-    writeln!(s, "@ARG")?;
-    writeln!(s, "M=D")?;
+    restore_caller_symbol(&mut s, "ARG", 3)?;
 
     // LCL = *(FRAME-4)
-    writeln!(s, "@R14")?;
-    writeln!(s, "D=M")?;
-    writeln!(s, "@4")?;
-    writeln!(s, "D=D-A")?;
-    writeln!(s, "A=D")?;
-    writeln!(s, "D=M")?;
-    writeln!(s, "@LCL")?;
-    writeln!(s, "M=D")?;
+    restore_caller_symbol(&mut s, "LCL", 4)?;
 
     // goto RET
     writeln!(s, "@R15")?;
@@ -82,4 +54,16 @@ pub fn write() -> Result<String, Error> {
     writeln!(s, "0;JMP")?;
 
     Ok(s)
+}
+
+fn restore_caller_symbol(s: &mut String, symbol: &str, index: i32) -> Result<(), Error> {
+    writeln!(s, "@R14")?;
+    writeln!(s, "D=M")?;
+    writeln!(s, "@{}", index)?;
+    writeln!(s, "D=D-A")?;
+    writeln!(s, "A=D")?;
+    writeln!(s, "D=M")?;
+    writeln!(s, "@{}", symbol)?;
+    writeln!(s, "M=D")?;
+    Ok(())
 }
