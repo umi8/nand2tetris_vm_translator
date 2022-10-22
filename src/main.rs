@@ -1,3 +1,5 @@
+use std::fs::read_dir;
+
 use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
 use crate::command_type::CommandType;
@@ -17,7 +19,9 @@ mod segment;
 
 fn main() -> Result<(), MyError> {
     let mut code_writer = CodeWriter::new("File.asm")?;
-    parse(&mut code_writer, "File.vm")?;
+    for entry in read_dir("vm")? {
+        parse(&mut code_writer, &entry?.path().to_string_lossy())?;
+    }
     println!("File translation succeeded: File.asm");
     Ok(())
 }
