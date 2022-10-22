@@ -1,3 +1,5 @@
+use std::fs::read_dir;
+
 use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
 use crate::command_type::CommandType;
@@ -16,10 +18,16 @@ mod return_writer;
 mod segment;
 
 fn main() -> Result<(), MyError> {
-    let mut parser = Parser::new("File.vm")?;
-
     let mut code_writer = CodeWriter::new("File.asm")?;
+    for entry in read_dir("vm")? {
+        parse(&mut code_writer, &entry?.path().to_string_lossy())?;
+    }
+    println!("File translation succeeded: File.asm");
+    Ok(())
+}
 
+fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<(), MyError> {
+    let mut parser = Parser::new(file_path)?;
     while parser.has_more_commands() {
         match parser.command_type()? {
             CommandType::Arithmetic => {
@@ -38,7 +46,5 @@ fn main() -> Result<(), MyError> {
             CommandType::Call => code_writer.write_call(parser.arg1()?, parser.arg2()?)?,
         }
     }
-
-    println!("File translation succeeded: File.asm");
     Ok(())
 }
