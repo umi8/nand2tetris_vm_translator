@@ -31,9 +31,7 @@ impl CodeWriter {
         writeln!(&mut self.file, "M=D")?;
 
         // call Sys.init
-        writeln!(&mut self.file, "@Sys.init")?;
-        writeln!(&mut self.file, "0;JMP")?;
-
+        self.write_call("Sys.init", 0)?;
         Ok(())
     }
 
