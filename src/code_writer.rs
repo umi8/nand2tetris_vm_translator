@@ -89,7 +89,11 @@ impl CodeWriter {
 
     pub fn write_call(&mut self, function_name: &str, num_args: i32) -> Result<(), MyError> {
         // push return-address
-        writeln!(&mut self.file, "@RETURN{}", self.return_address_counter)?;
+        writeln!(
+            &mut self.file,
+            "@return-address{}",
+            self.return_address_counter
+        )?;
         writeln!(&mut self.file, "D=A")?;
         writeln!(&mut self.file, "@SP")?;
         writeln!(&mut self.file, "A=M")?;
@@ -154,7 +158,11 @@ impl CodeWriter {
         writeln!(&mut self.file, "0;JMP")?;
 
         // declare label for return-address
-        writeln!(&mut self.file, "(RETURN{})", self.return_address_counter)?;
+        writeln!(
+            &mut self.file,
+            "(return-address{})",
+            self.return_address_counter
+        )?;
         self.return_address_counter += 1;
         Ok(())
     }
