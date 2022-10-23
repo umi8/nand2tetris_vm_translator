@@ -21,6 +21,20 @@ impl CodeWriter {
         })
     }
 
+    pub fn write_init(&mut self) -> Result<(), MyError> {
+        // SP = 256
+        writeln!(&mut self.file, "@256")?;
+        writeln!(&mut self.file, "D=A")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // call Sys.init
+        writeln!(&mut self.file, "@Sys.init")?;
+        writeln!(&mut self.file, "0;JMP")?;
+
+        Ok(())
+    }
+
     pub fn write_arithmetic(&mut self, arithmetic_command: ArithmeticType) -> Result<(), MyError> {
         write!(
             &mut self.file,
