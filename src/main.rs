@@ -19,6 +19,7 @@ mod segment;
 
 fn main() -> Result<(), MyError> {
     let mut code_writer = CodeWriter::new("File.asm")?;
+    code_writer.write_init()?;
     for entry in read_dir("vm")? {
         parse(&mut code_writer, &entry?.path().to_string_lossy())?;
     }
