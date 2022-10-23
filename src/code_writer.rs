@@ -10,6 +10,7 @@ use crate::{return_writer, CommandType};
 pub struct CodeWriter {
     file: File,
     comparison_counter: i32,
+    return_address_counter: i32,
 }
 
 impl CodeWriter {
@@ -18,6 +19,7 @@ impl CodeWriter {
         Ok(CodeWriter {
             file: out,
             comparison_counter: 0,
+            return_address_counter: 0,
         })
     }
 
@@ -89,8 +91,8 @@ impl CodeWriter {
 
     pub fn write_call(&mut self, function_name: &str, num_args: i32) -> Result<(), MyError> {
         // push return-address
-        writeln!(&mut self.file, "@return-address")?;
-        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@RETURN{}", self.return_address_counter)?;
+        writeln!(&mut self.file, "D=A")?;
         writeln!(&mut self.file, "@SP")?;
         writeln!(&mut self.file, "A=M")?;
         writeln!(&mut self.file, "M=D")?;
@@ -154,8 +156,8 @@ impl CodeWriter {
         writeln!(&mut self.file, "0;JMP")?;
 
         // declare label for return-address
-        writeln!(&mut self.file, "(return-address)")?;
-
+        writeln!(&mut self.file, "(RETURN{})", self.return_address_counter)?;
+        self.return_address_counter += 1;
         Ok(())
     }
 
