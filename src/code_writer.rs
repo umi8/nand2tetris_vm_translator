@@ -73,7 +73,75 @@ impl CodeWriter {
         Ok(())
     }
 
-    pub fn write_call(&mut self, _function_name: &str, _num_args: i32) -> Result<(), MyError> {
+    pub fn write_call(&mut self, function_name: &str, num_args: i32) -> Result<(), MyError> {
+        // push return-address
+        writeln!(&mut self.file, "@return-address")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "A=M")?;
+        writeln!(&mut self.file, "M=D")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=M+1")?;
+
+        // push LCL
+        writeln!(&mut self.file, "@LCL")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "A=M")?;
+        writeln!(&mut self.file, "M=D")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=M+1")?;
+
+        // push ARG
+        writeln!(&mut self.file, "@ARG")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "A=M")?;
+        writeln!(&mut self.file, "M=D")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=M+1")?;
+
+        // push THIS
+        writeln!(&mut self.file, "@THIS")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "A=M")?;
+        writeln!(&mut self.file, "M=D")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=M+1")?;
+
+        // push THAT
+        writeln!(&mut self.file, "@THAT")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "A=M")?;
+        writeln!(&mut self.file, "M=D")?;
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "M=M+1")?;
+
+        // ARG = SP-n-5
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@{}", num_args)?;
+        writeln!(&mut self.file, "D=D-A")?;
+        writeln!(&mut self.file, "@5")?;
+        writeln!(&mut self.file, "D=D-A")?;
+        writeln!(&mut self.file, "@ARG")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // LCL = SP
+        writeln!(&mut self.file, "@SP")?;
+        writeln!(&mut self.file, "D=M")?;
+        writeln!(&mut self.file, "@LCL")?;
+        writeln!(&mut self.file, "M=D")?;
+
+        // goto f
+        writeln!(&mut self.file, "@{}", function_name)?;
+        writeln!(&mut self.file, "0;JMP")?;
+
+        // declare label for return-address
+        writeln!(&mut self.file, "(return-address)")?;
+
         Ok(())
     }
 
