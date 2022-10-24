@@ -1,9 +1,10 @@
 use std::fs::read_dir;
+use std::path::Path;
 
 use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
 use crate::command_type::CommandType;
-use crate::my_error::MyError;
+use crate::my_error::{IllegalArgumentError, MyError};
 use crate::parser::Parser;
 use crate::segment::Segment;
 
@@ -27,6 +28,20 @@ fn main() -> Result<(), MyError> {
     Ok(())
 }
 
+fn create_output_file_name(path: &Path) -> Result<String, IllegalArgumentError> {
+    if path.is_file() && path.extension().unwrap() == "vm" {
+        let file_name = path.file_stem().unwrap().to_string_lossy();
+        return Ok(format!("{}.asm", file_name));
+    }
+
+    if path.is_dir() {
+        let dir_name = path.file_name().unwrap().to_string_lossy();
+        return Ok(format!("{}/{}.asm", dir_name, dir_name));
+    }
+
+    Err(IllegalArgumentError)
+}
+
 fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<(), MyError> {
     let mut parser = Parser::new(file_path)?;
     while parser.has_more_commands() {
@@ -48,4 +63,31 @@ fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<(), MyError> {
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::create_output_file_name;
+    use std::path::Path;
+
+    #[test]
+    fn if_path_is_vm_file() {
+        assert_eq!(
+            "file_name_test.asm",
+            create_output_file_name(Path::new("tests/resources/file_name_test.vm")).unwrap()
+        );
+    }
+
+    #[test]
+    fn if_path_is_dir() {
+        assert_eq!(
+            "dir_test/dir_test.asm",
+            create_output_file_name(Path::new("tests/resources/dir_test")).unwrap()
+        );
+    }
+
+    #[test]
+    fn if_path_is_not_allowed_file() {
+        assert!(create_output_file_name(Path::new("tests/resources/file_name_test.hoge")).is_err());
+    }
 }
