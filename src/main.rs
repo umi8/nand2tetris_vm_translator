@@ -1,5 +1,6 @@
-use std::fs::read_dir;
 use std::path::Path;
+
+use walkdir::{DirEntry, WalkDir};
 
 use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
@@ -19,13 +20,34 @@ mod return_writer;
 mod segment;
 
 fn main() -> Result<(), MyError> {
+    let arg = "vm";
+    let path = Path::new(arg);
+    let files: Vec<DirEntry> = extract_files_from(path);
+
     let mut code_writer = CodeWriter::new("File.asm")?;
     code_writer.write_init()?;
-    for entry in read_dir("vm")? {
-        parse(&mut code_writer, &entry?.path().to_string_lossy())?;
+    for file in files {
+        parse(&mut code_writer, file.path().to_str().unwrap())?;
     }
+
     println!("File translation succeeded: File.asm");
     Ok(())
+}
+
+fn extract_files_from(path: &Path) -> Vec<DirEntry> {
+    WalkDir::new(path)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(is_vm_file)
+        .collect()
+}
+
+fn is_vm_file(entry: &DirEntry) -> bool {
+    entry
+        .file_name()
+        .to_str()
+        .map(|s| s.ends_with(".vm"))
+        .unwrap_or(false)
 }
 
 fn create_output_file_name(path: &Path) -> Result<String, IllegalArgumentError> {
@@ -67,8 +89,9 @@ fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<(), MyError> {
 
 #[cfg(test)]
 mod tests {
-    use crate::create_output_file_name;
     use std::path::Path;
+
+    use crate::create_output_file_name;
 
     #[test]
     fn if_path_is_vm_file() {
