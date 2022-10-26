@@ -24,6 +24,11 @@ fn main() -> Result<(), MyError> {
     let path = Path::new(arg);
     let files: Vec<DirEntry> = extract_files_from(path);
 
+    if files.is_empty() {
+        println!("The translation target doesn't exist.");
+        return Ok(());
+    }
+
     let mut code_writer = CodeWriter::new("File.asm")?;
     code_writer.write_init()?;
     for file in files {
