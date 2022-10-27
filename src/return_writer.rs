@@ -5,15 +5,15 @@ pub fn write() -> Result<String, Error> {
     // FRAME = LCL
     writeln!(s, "@LCL")?;
     writeln!(s, "D=M")?;
-    writeln!(s, "@R14")?;
+    writeln!(s, "@FRAME")?;
     writeln!(s, "M=D")?;
 
     // RET = *(FRAME-5)
-    writeln!(s, "@R14")?;
+    writeln!(s, "@FRAME")?;
     writeln!(s, "D=M")?;
     writeln!(s, "@5")?;
     writeln!(s, "D=D-A")?;
-    writeln!(s, "@R15")?;
+    writeln!(s, "@RET")?;
     writeln!(s, "M=D")?;
 
     // *ARG = pop()
@@ -49,7 +49,7 @@ pub fn write() -> Result<String, Error> {
     restore_caller_symbol(&mut s, "LCL", 4)?;
 
     // goto RET
-    writeln!(s, "@R15")?;
+    writeln!(s, "@RET")?;
     writeln!(s, "A=M")?;
     writeln!(s, "0;JMP")?;
 
@@ -57,7 +57,7 @@ pub fn write() -> Result<String, Error> {
 }
 
 fn restore_caller_symbol(s: &mut String, symbol: &str, index: i32) -> Result<(), Error> {
-    writeln!(s, "@R14")?;
+    writeln!(s, "@FRAME")?;
     writeln!(s, "D=M")?;
     writeln!(s, "@{}", index)?;
     writeln!(s, "D=D-A")?;
