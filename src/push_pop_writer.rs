@@ -1,9 +1,11 @@
-use std::fmt::{Error, Write};
+use std::fmt::Write;
+
+use anyhow::Result;
 
 use crate::segment::Segment;
 use crate::CommandType;
 
-pub fn write(command: CommandType, segment: Segment, index: &i32) -> Result<String, Error> {
+pub fn write(command: CommandType, segment: Segment, index: &i32) -> Result<String> {
     let mut s = String::new();
     if command == CommandType::Push {
         push(&mut s, segment, index)?;
@@ -13,7 +15,7 @@ pub fn write(command: CommandType, segment: Segment, index: &i32) -> Result<Stri
     Ok(s)
 }
 
-fn push(s: &mut String, segment: Segment, index: &i32) -> Result<(), Error> {
+fn push(s: &mut String, segment: Segment, index: &i32) -> Result<()> {
     // segment[index]をDレジスタに入れる
     store_index_of_segment_in_d_register(s, segment, index)?;
     // SPをAレジスタに入れる
@@ -25,7 +27,7 @@ fn push(s: &mut String, segment: Segment, index: &i32) -> Result<(), Error> {
     Ok(())
 }
 
-fn pop(s: &mut String, segment: Segment, index: &i32) -> Result<(), Error> {
+fn pop(s: &mut String, segment: Segment, index: &i32) -> Result<()> {
     // pop先のアドレスをDレジスタに入れる
     store_dest_address_in_d_register(s, segment, index)?;
     // pop先のアドレスをR13に退避する
@@ -45,7 +47,7 @@ fn store_index_of_segment_in_d_register(
     s: &mut String,
     segment: Segment,
     index: &i32,
-) -> Result<(), Error> {
+) -> Result<()> {
     match segment {
         Segment::Constant => {
             writeln!(s, "@{}", index)?;
@@ -111,11 +113,7 @@ fn store_index_of_segment_in_d_register(
     Ok(())
 }
 
-fn store_dest_address_in_d_register(
-    s: &mut String,
-    segment: Segment,
-    index: &i32,
-) -> Result<(), Error> {
+fn store_dest_address_in_d_register(s: &mut String, segment: Segment, index: &i32) -> Result<()> {
     match segment {
         Segment::Constant => {} // do nothing
         Segment::Local => {
@@ -166,7 +164,7 @@ fn store_dest_address_in_d_register(
     Ok(())
 }
 
-fn peek_value_into_d_register(s: &mut String) -> Result<(), Error> {
+fn peek_value_into_d_register(s: &mut String) -> Result<()> {
     decrement_stack_pointer(s)?;
     set_memory_address_to_stack_pointer(s)?;
     // store top of stack value in D register
@@ -174,19 +172,19 @@ fn peek_value_into_d_register(s: &mut String) -> Result<(), Error> {
     Ok(())
 }
 
-fn set_memory_address_to_stack_pointer(s: &mut String) -> Result<(), Error> {
+fn set_memory_address_to_stack_pointer(s: &mut String) -> Result<()> {
     writeln!(s, "@SP")?;
     writeln!(s, "A=M")?;
     Ok(())
 }
 
-fn increment_stack_pointer(s: &mut String) -> Result<(), Error> {
+fn increment_stack_pointer(s: &mut String) -> Result<()> {
     writeln!(s, "@SP")?;
     writeln!(s, "M=M+1")?;
     Ok(())
 }
 
-fn decrement_stack_pointer(s: &mut String) -> Result<(), Error> {
+fn decrement_stack_pointer(s: &mut String) -> Result<()> {
     writeln!(s, "@SP")?;
     writeln!(s, "M=M-1")?;
     Ok(())

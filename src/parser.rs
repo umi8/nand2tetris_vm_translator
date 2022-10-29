@@ -1,11 +1,11 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader, Error};
-use std::num::ParseIntError;
+use std::io::{BufRead, BufReader};
 
+use anyhow::{bail, Result};
 use regex::Regex;
 
 use crate::command_type::CommandType;
-use crate::my_error::IllegalArgumentError;
+use crate::illegal_argument_error::IllegalArgumentError;
 
 pub struct Parser {
     reader: BufReader<File>,
@@ -13,7 +13,7 @@ pub struct Parser {
 }
 
 impl Parser {
-    pub fn new(file_path: &str) -> Result<Self, Error> {
+    pub fn new(file_path: &str) -> Result<Self> {
         let vm_file = File::open(file_path)?;
         let reader = BufReader::new(vm_file);
         Ok(Parser {
@@ -42,12 +42,12 @@ impl Parser {
         }
     }
 
-    pub fn command_type(&self) -> Result<CommandType, IllegalArgumentError> {
+    pub fn command_type(&self) -> Result<CommandType> {
         let commands: Vec<&str> = self.command.split_whitespace().collect();
         CommandType::from(commands[0])
     }
 
-    pub fn arg1(&self) -> Result<&str, IllegalArgumentError> {
+    pub fn arg1(&self) -> Result<&str> {
         return match self.command_type()? {
             CommandType::Arithmetic => Ok(&self.command),
             CommandType::Push
@@ -60,12 +60,12 @@ impl Parser {
                 let commands: Vec<&str> = self.command.split_whitespace().collect();
                 Ok(commands[1])
             }
-            CommandType::Return => Err(IllegalArgumentError),
+            CommandType::Return => bail!(IllegalArgumentError),
         };
     }
 
-    pub fn arg2(&self) -> Result<i32, ParseIntError> {
+    pub fn arg2(&self) -> Result<i32> {
         let commands: Vec<&str> = self.command.split_whitespace().collect();
-        commands[2].parse::<i32>()
+        Ok(commands[2].parse::<i32>()?)
     }
 }

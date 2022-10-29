@@ -1,6 +1,7 @@
-use std::fmt::{Error, Write};
+use anyhow::Result;
+use std::fmt::Write;
 
-pub fn write() -> Result<String, Error> {
+pub fn write() -> Result<String> {
     let mut s = String::new();
     // FRAME = LCL
     writeln!(s, "@LCL")?;
@@ -57,7 +58,7 @@ pub fn write() -> Result<String, Error> {
     Ok(s)
 }
 
-fn restore_caller_symbol(s: &mut String, symbol: &str, index: i32) -> Result<(), Error> {
+fn restore_caller_symbol(s: &mut String, symbol: &str, index: i32) -> Result<()> {
     writeln!(s, "@FRAME")?;
     writeln!(s, "D=M")?;
     writeln!(s, "@{}", index)?;

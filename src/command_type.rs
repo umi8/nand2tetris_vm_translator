@@ -1,4 +1,6 @@
-use crate::my_error::IllegalArgumentError;
+use anyhow::{bail, Result};
+
+use crate::illegal_argument_error::IllegalArgumentError;
 use crate::ArithmeticType;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -15,7 +17,7 @@ pub enum CommandType {
 }
 
 impl CommandType {
-    pub fn from(command: &str) -> Result<CommandType, IllegalArgumentError> {
+    pub fn from(command: &str) -> Result<CommandType> {
         match command {
             "push" => Ok(CommandType::Push),
             "pop" => Ok(CommandType::Pop),
@@ -29,7 +31,7 @@ impl CommandType {
                 if ArithmeticType::exists(command) {
                     Ok(CommandType::Arithmetic)
                 } else {
-                    Err(IllegalArgumentError)
+                    bail!(IllegalArgumentError)
                 }
             }
         }

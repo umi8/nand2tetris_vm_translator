@@ -1,11 +1,11 @@
 use std::path::Path;
 
+use anyhow::Result;
 use walkdir::{DirEntry, WalkDir};
 
 use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
 use crate::command_type::CommandType;
-use crate::my_error::MyError;
 use crate::parser::Parser;
 use crate::segment::Segment;
 
@@ -13,13 +13,13 @@ mod arithmetic_type;
 mod arithmetic_writer;
 mod code_writer;
 mod command_type;
-mod my_error;
+mod illegal_argument_error;
 mod parser;
 mod push_pop_writer;
 mod return_writer;
 mod segment;
 
-fn main() -> Result<(), MyError> {
+fn main() -> Result<()> {
     let arg = "vm";
     let path = Path::new(arg);
     let files: Vec<DirEntry> = extract_files_from(path);
@@ -67,7 +67,7 @@ fn create_output_file_name(path: &Path) -> String {
     format!("{}/{}.asm", dir, dir_name)
 }
 
-fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<(), MyError> {
+fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<()> {
     let mut parser = Parser::new(file_path)?;
     while parser.has_more_commands() {
         match parser.command_type()? {
