@@ -105,23 +105,10 @@ mod tests {
     }
 
     #[test]
-    fn if_path_is_vm_file_in_same_level() {
-        assert_eq!("file.asm", create_output_file_name(Path::new("file.vm")));
-    }
-
-    #[test]
     fn if_path_is_dir() {
         assert_eq!(
             "tests/resources/dir_test/dir_test.asm",
             create_output_file_name(Path::new("tests/resources/dir_test"))
-        );
-    }
-
-    #[test]
-    fn if_path_is_dir_in_same_level() {
-        assert_eq!(
-            "tests/tests.asm",
-            create_output_file_name(Path::new("tests"))
         );
     }
 }
