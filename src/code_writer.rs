@@ -1,8 +1,8 @@
+use anyhow::Result;
 use std::fs::File;
-use std::io::{Error, Write};
+use std::io::Write;
 
 use crate::arithmetic_type::ArithmeticType;
-use crate::my_error::MyError;
 use crate::segment::Segment;
 use crate::{arithmetic_writer, push_pop_writer};
 use crate::{return_writer, CommandType};
@@ -14,7 +14,7 @@ pub struct CodeWriter {
 }
 
 impl CodeWriter {
-    pub fn new(file_path: &str) -> Result<Self, Error> {
+    pub fn new(file_path: &str) -> Result<Self> {
         let out = File::create(file_path)?;
         Ok(CodeWriter {
             file: out,
@@ -23,7 +23,7 @@ impl CodeWriter {
         })
     }
 
-    pub fn write_init(&mut self) -> Result<(), MyError> {
+    pub fn write_init(&mut self) -> Result<()> {
         // SP = 256
         writeln!(&mut self.file, "@256")?;
         writeln!(&mut self.file, "D=A")?;
@@ -35,7 +35,7 @@ impl CodeWriter {
         Ok(())
     }
 
-    pub fn write_arithmetic(&mut self, arithmetic_command: ArithmeticType) -> Result<(), MyError> {
+    pub fn write_arithmetic(&mut self, arithmetic_command: ArithmeticType) -> Result<()> {
         write!(
             &mut self.file,
             "{}",
@@ -52,7 +52,7 @@ impl CodeWriter {
         command: CommandType,
         segment: Segment,
         index: &i32,
-    ) -> Result<(), MyError> {
+    ) -> Result<()> {
         write!(
             &mut self.file,
             "{}",
@@ -61,18 +61,18 @@ impl CodeWriter {
         Ok(())
     }
 
-    pub fn write_label(&mut self, label: &str) -> Result<(), MyError> {
+    pub fn write_label(&mut self, label: &str) -> Result<()> {
         writeln!(&mut self.file, "({})", label)?;
         Ok(())
     }
 
-    pub fn write_goto(&mut self, label: &str) -> Result<(), MyError> {
+    pub fn write_goto(&mut self, label: &str) -> Result<()> {
         writeln!(&mut self.file, "@{}", label)?;
         writeln!(&mut self.file, "0;JMP")?;
         Ok(())
     }
 
-    pub fn write_if(&mut self, label: &str) -> Result<(), MyError> {
+    pub fn write_if(&mut self, label: &str) -> Result<()> {
         // decrement stack pointer
         writeln!(&mut self.file, "@SP")?;
         writeln!(&mut self.file, "M=M-1")?;
@@ -87,7 +87,7 @@ impl CodeWriter {
         Ok(())
     }
 
-    pub fn write_call(&mut self, function_name: &str, num_args: i32) -> Result<(), MyError> {
+    pub fn write_call(&mut self, function_name: &str, num_args: i32) -> Result<()> {
         // push return-address
         writeln!(
             &mut self.file,
@@ -167,12 +167,12 @@ impl CodeWriter {
         Ok(())
     }
 
-    pub fn write_return(&mut self) -> Result<(), MyError> {
+    pub fn write_return(&mut self) -> Result<()> {
         write!(&mut self.file, "{}", return_writer::write()?)?;
         Ok(())
     }
 
-    pub fn write_function(&mut self, function_name: &str, num_locals: i32) -> Result<(), MyError> {
+    pub fn write_function(&mut self, function_name: &str, num_locals: i32) -> Result<()> {
         // declare function label
         writeln!(&mut self.file, "({})", function_name)?;
         // initialize with 0 for the number of local variables

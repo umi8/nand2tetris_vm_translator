@@ -1,3 +1,5 @@
+use anyhow::{bail, Result};
+
 use crate::my_error::IllegalArgumentError;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -14,7 +16,7 @@ pub enum ArithmeticType {
 }
 
 impl ArithmeticType {
-    pub fn from(command: &str) -> Result<ArithmeticType, IllegalArgumentError> {
+    pub fn from(command: &str) -> Result<ArithmeticType> {
         match command {
             "add" => Ok(ArithmeticType::Add),
             "sub" => Ok(ArithmeticType::Sub),
@@ -25,7 +27,7 @@ impl ArithmeticType {
             "and" => Ok(ArithmeticType::And),
             "or" => Ok(ArithmeticType::OR),
             "not" => Ok(ArithmeticType::Not),
-            &_ => Err(IllegalArgumentError),
+            &_ => bail!(IllegalArgumentError),
         }
     }
 

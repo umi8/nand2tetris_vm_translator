@@ -1,8 +1,10 @@
-use std::fmt::{Error, Write};
+use std::fmt::Write;
+
+use anyhow::Result;
 
 use crate::arithmetic_type::ArithmeticType;
 
-pub fn write(command: &ArithmeticType, comparison_counter: i32) -> Result<String, Error> {
+pub fn write(command: &ArithmeticType, comparison_counter: i32) -> Result<String> {
     let mut s = String::new();
     match command {
         ArithmeticType::Add => add(&mut s),
@@ -18,52 +20,52 @@ pub fn write(command: &ArithmeticType, comparison_counter: i32) -> Result<String
     Ok(s)
 }
 
-fn add(s: &mut String) -> Result<(), Error> {
+fn add(s: &mut String) -> Result<()> {
     binary_operation(s, "+")?;
     Ok(())
 }
 
-fn sub(s: &mut String) -> Result<(), Error> {
+fn sub(s: &mut String) -> Result<()> {
     binary_operation(s, "-")?;
     Ok(())
 }
 
-fn neg(s: &mut String) -> Result<(), Error> {
+fn neg(s: &mut String) -> Result<()> {
     unary_operation(s, "-")?;
     Ok(())
 }
 
-fn eq(s: &mut String, comparison_counter: i32) -> Result<(), Error> {
+fn eq(s: &mut String, comparison_counter: i32) -> Result<()> {
     comparison(s, "JEQ", comparison_counter)?;
     Ok(())
 }
 
-fn gt(s: &mut String, comparison_counter: i32) -> Result<(), Error> {
+fn gt(s: &mut String, comparison_counter: i32) -> Result<()> {
     comparison(s, "JGT", comparison_counter)?;
     Ok(())
 }
 
-fn lt(s: &mut String, comparison_counter: i32) -> Result<(), Error> {
+fn lt(s: &mut String, comparison_counter: i32) -> Result<()> {
     comparison(s, "JLT", comparison_counter)?;
     Ok(())
 }
 
-fn and(s: &mut String) -> Result<(), Error> {
+fn and(s: &mut String) -> Result<()> {
     binary_operation(s, "&")?;
     Ok(())
 }
 
-fn or(s: &mut String) -> Result<(), Error> {
+fn or(s: &mut String) -> Result<()> {
     binary_operation(s, "|")?;
     Ok(())
 }
 
-fn not(s: &mut String) -> Result<(), Error> {
+fn not(s: &mut String) -> Result<()> {
     unary_operation(s, "!")?;
     Ok(())
 }
 
-fn binary_operation(s: &mut String, operator: &str) -> Result<(), Error> {
+fn binary_operation(s: &mut String, operator: &str) -> Result<()> {
     peek_value_into_d_register(s)?;
     decrement_stack_pointer(s)?;
     set_memory_address_to_stack_pointer(s)?;
@@ -72,7 +74,7 @@ fn binary_operation(s: &mut String, operator: &str) -> Result<(), Error> {
     Ok(())
 }
 
-fn unary_operation(s: &mut String, operator: &str) -> Result<(), Error> {
+fn unary_operation(s: &mut String, operator: &str) -> Result<()> {
     decrement_stack_pointer(s)?;
     set_memory_address_to_stack_pointer(s)?;
     writeln!(s, "M={}M", operator)?;
@@ -80,7 +82,7 @@ fn unary_operation(s: &mut String, operator: &str) -> Result<(), Error> {
     Ok(())
 }
 
-fn comparison(s: &mut String, jump_mnemonic: &str, comparison_counter: i32) -> Result<(), Error> {
+fn comparison(s: &mut String, jump_mnemonic: &str, comparison_counter: i32) -> Result<()> {
     peek_value_into_d_register(s)?;
     decrement_stack_pointer(s)?;
     set_memory_address_to_stack_pointer(s)?;
@@ -107,7 +109,7 @@ fn comparison(s: &mut String, jump_mnemonic: &str, comparison_counter: i32) -> R
     Ok(())
 }
 
-fn peek_value_into_d_register(s: &mut String) -> Result<(), Error> {
+fn peek_value_into_d_register(s: &mut String) -> Result<()> {
     decrement_stack_pointer(s)?;
     set_memory_address_to_stack_pointer(s)?;
     // store top of stack value in D register
@@ -115,19 +117,19 @@ fn peek_value_into_d_register(s: &mut String) -> Result<(), Error> {
     Ok(())
 }
 
-fn set_memory_address_to_stack_pointer(s: &mut String) -> Result<(), Error> {
+fn set_memory_address_to_stack_pointer(s: &mut String) -> Result<()> {
     writeln!(s, "@SP")?;
     writeln!(s, "A=M")?;
     Ok(())
 }
 
-fn increment_stack_pointer(s: &mut String) -> Result<(), Error> {
+fn increment_stack_pointer(s: &mut String) -> Result<()> {
     writeln!(s, "@SP")?;
     writeln!(s, "M=M+1")?;
     Ok(())
 }
 
-fn decrement_stack_pointer(s: &mut String) -> Result<(), Error> {
+fn decrement_stack_pointer(s: &mut String) -> Result<()> {
     writeln!(s, "@SP")?;
     writeln!(s, "M=M-1")?;
     Ok(())
