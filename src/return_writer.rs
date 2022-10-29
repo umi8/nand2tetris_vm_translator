@@ -12,21 +12,22 @@ pub fn write() -> Result<String, Error> {
     writeln!(s, "@FRAME")?;
     writeln!(s, "D=M")?;
     writeln!(s, "@5")?;
-    writeln!(s, "D=D-A")?;
+    writeln!(s, "A=D-A")?;
+    writeln!(s, "D=M")?;
     writeln!(s, "@RET")?;
     writeln!(s, "M=D")?;
 
     // *ARG = pop()
     writeln!(s, "@ARG")?;
     writeln!(s, "D=M")?;
-    writeln!(s, "@R13")?;
+    writeln!(s, "@TMP")?;
     writeln!(s, "M=D")?;
     writeln!(s, "@SP")?;
     writeln!(s, "M=M-1")?;
     writeln!(s, "@SP")?;
     writeln!(s, "A=M")?;
     writeln!(s, "D=M")?;
-    writeln!(s, "@R13")?;
+    writeln!(s, "@TMP")?;
     writeln!(s, "A=M")?;
     writeln!(s, "M=D")?;
 
