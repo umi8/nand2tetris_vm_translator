@@ -5,7 +5,7 @@ use anyhow::{bail, Result};
 use regex::Regex;
 
 use crate::command_type::CommandType;
-use crate::my_error::IllegalArgumentError;
+use crate::illegal_argument_error::IllegalArgumentError;
 
 pub struct Parser {
     reader: BufReader<File>,

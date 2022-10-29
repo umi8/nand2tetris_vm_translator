@@ -1,6 +1,6 @@
 use anyhow::{bail, Result};
 
-use crate::my_error::IllegalArgumentError;
+use crate::illegal_argument_error::IllegalArgumentError;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Segment {

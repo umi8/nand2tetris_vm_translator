@@ -13,7 +13,7 @@ mod arithmetic_type;
 mod arithmetic_writer;
 mod code_writer;
 mod command_type;
-mod my_error;
+mod illegal_argument_error;
 mod parser;
 mod push_pop_writer;
 mod return_writer;
