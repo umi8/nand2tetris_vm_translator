@@ -19,14 +19,14 @@ pub fn write() -> Result<String, Error> {
     // *ARG = pop()
     writeln!(s, "@ARG")?;
     writeln!(s, "D=M")?;
-    writeln!(s, "@R13")?;
+    writeln!(s, "@TMP")?;
     writeln!(s, "M=D")?;
     writeln!(s, "@SP")?;
     writeln!(s, "M=M-1")?;
     writeln!(s, "@SP")?;
     writeln!(s, "A=M")?;
     writeln!(s, "D=M")?;
-    writeln!(s, "@R13")?;
+    writeln!(s, "@TMP")?;
     writeln!(s, "A=M")?;
     writeln!(s, "M=D")?;
 
