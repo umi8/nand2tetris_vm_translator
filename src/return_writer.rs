@@ -12,7 +12,8 @@ pub fn write() -> Result<String, Error> {
     writeln!(s, "@FRAME")?;
     writeln!(s, "D=M")?;
     writeln!(s, "@5")?;
-    writeln!(s, "D=D-A")?;
+    writeln!(s, "A=D-A")?;
+    writeln!(s, "D=M")?;
     writeln!(s, "@RET")?;
     writeln!(s, "M=D")?;
 
