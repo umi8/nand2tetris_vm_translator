@@ -26,10 +26,10 @@ impl CodeWriter {
 
     pub fn write_init(&mut self) -> Result<()> {
         // SP = 256
-        self.write("@256")?;
-        self.write("D=A")?;
-        self.write("@SP")?;
-        self.write("M=D")?;
+        self.writeln("@256")?;
+        self.writeln("D=A")?;
+        self.writeln("@SP")?;
+        self.writeln("M=D")?;
 
         // call Sys.init
         self.write_call("Sys.init", 0)?;
@@ -63,92 +63,92 @@ impl CodeWriter {
     }
 
     pub fn write_label(&mut self, label: &str) -> Result<()> {
-        self.write(format!("({})", label).as_str())?;
+        self.writeln(format!("({})", label).as_str())?;
         Ok(())
     }
 
     pub fn write_goto(&mut self, label: &str) -> Result<()> {
-        self.write(format!("@{}", label).as_str())?;
-        self.write("0;JMP")?;
+        self.writeln(format!("@{}", label).as_str())?;
+        self.writeln("0;JMP")?;
         Ok(())
     }
 
     pub fn write_if(&mut self, label: &str) -> Result<()> {
         // decrement stack pointer
-        self.write("@SP")?;
-        self.write("M=M-1")?;
+        self.writeln("@SP")?;
+        self.writeln("M=M-1")?;
         // set memory address to stack pointer
-        self.write("@SP")?;
-        self.write("A=M")?;
+        self.writeln("@SP")?;
+        self.writeln("A=M")?;
         // store top of stack value in D register
-        self.write("D=M")?;
+        self.writeln("D=M")?;
         // if D != 0 goto label
-        self.write(format!("@{}", label).as_str())?;
-        self.write("D;JNE")?;
+        self.writeln(format!("@{}", label).as_str())?;
+        self.writeln("D;JNE")?;
         Ok(())
     }
 
     pub fn write_call(&mut self, function_name: &str, num_args: i32) -> Result<()> {
         // push return-address
         writeln!(&mut self.file, "@return-address{}", self.label_counter)?;
-        self.write("D=A")?;
-        self.write("@SP")?;
-        self.write("A=M")?;
-        self.write("M=D")?;
-        self.write("@SP")?;
-        self.write("M=M+1")?;
+        self.writeln("D=A")?;
+        self.writeln("@SP")?;
+        self.writeln("A=M")?;
+        self.writeln("M=D")?;
+        self.writeln("@SP")?;
+        self.writeln("M=M+1")?;
 
         // push LCL
-        self.write("@LCL")?;
-        self.write("D=M")?;
-        self.write("@SP")?;
-        self.write("A=M")?;
-        self.write("M=D")?;
-        self.write("@SP")?;
-        self.write("M=M+1")?;
+        self.writeln("@LCL")?;
+        self.writeln("D=M")?;
+        self.writeln("@SP")?;
+        self.writeln("A=M")?;
+        self.writeln("M=D")?;
+        self.writeln("@SP")?;
+        self.writeln("M=M+1")?;
 
         // push ARG
-        self.write("@ARG")?;
-        self.write("D=M")?;
-        self.write("@SP")?;
-        self.write("A=M")?;
-        self.write("M=D")?;
-        self.write("@SP")?;
-        self.write("M=M+1")?;
+        self.writeln("@ARG")?;
+        self.writeln("D=M")?;
+        self.writeln("@SP")?;
+        self.writeln("A=M")?;
+        self.writeln("M=D")?;
+        self.writeln("@SP")?;
+        self.writeln("M=M+1")?;
 
         // push THIS
-        self.write("@THIS")?;
-        self.write("D=M")?;
-        self.write("@SP")?;
-        self.write("A=M")?;
-        self.write("M=D")?;
-        self.write("@SP")?;
-        self.write("M=M+1")?;
+        self.writeln("@THIS")?;
+        self.writeln("D=M")?;
+        self.writeln("@SP")?;
+        self.writeln("A=M")?;
+        self.writeln("M=D")?;
+        self.writeln("@SP")?;
+        self.writeln("M=M+1")?;
 
         // push THAT
-        self.write("@THAT")?;
-        self.write("D=M")?;
-        self.write("@SP")?;
-        self.write("A=M")?;
-        self.write("M=D")?;
-        self.write("@SP")?;
-        self.write("M=M+1")?;
+        self.writeln("@THAT")?;
+        self.writeln("D=M")?;
+        self.writeln("@SP")?;
+        self.writeln("A=M")?;
+        self.writeln("M=D")?;
+        self.writeln("@SP")?;
+        self.writeln("M=M+1")?;
 
         // ARG = SP-n-5
-        self.write("@SP")?;
-        self.write("D=M")?;
-        self.write(format!("@{}", num_args).as_str())?;
-        self.write("D=D-A")?;
-        self.write("@5")?;
-        self.write("D=D-A")?;
-        self.write("@ARG")?;
-        self.write("M=D")?;
+        self.writeln("@SP")?;
+        self.writeln("D=M")?;
+        self.writeln(format!("@{}", num_args).as_str())?;
+        self.writeln("D=D-A")?;
+        self.writeln("@5")?;
+        self.writeln("D=D-A")?;
+        self.writeln("@ARG")?;
+        self.writeln("M=D")?;
 
         // LCL = SP
-        self.write("@SP")?;
-        self.write("D=M")?;
-        self.write("@LCL")?;
-        self.write("M=D")?;
+        self.writeln("@SP")?;
+        self.writeln("D=M")?;
+        self.writeln("@LCL")?;
+        self.writeln("M=D")?;
 
         // goto f
         self.write_goto(function_name)?;
@@ -174,7 +174,7 @@ impl CodeWriter {
         Ok(())
     }
 
-    fn write(&mut self, text: &str) -> Result<()> {
+    fn writeln(&mut self, text: &str) -> Result<()> {
         writeln!(&mut self.file, "{}", text)?;
         Ok(())
     }
