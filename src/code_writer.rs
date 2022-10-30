@@ -1,6 +1,7 @@
-use anyhow::Result;
 use std::fs::File;
 use std::io::Write;
+
+use anyhow::Result;
 
 use crate::arithmetic_type::ArithmeticType;
 use crate::segment::Segment;
@@ -25,10 +26,10 @@ impl CodeWriter {
 
     pub fn write_init(&mut self) -> Result<()> {
         // SP = 256
-        writeln!(&mut self.file, "@256")?;
-        writeln!(&mut self.file, "D=A")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=D")?;
+        self.write("@256")?;
+        self.write("D=A")?;
+        self.write("@SP")?;
+        self.write("M=D")?;
 
         // call Sys.init
         self.write_call("Sys.init", 0)?;
@@ -62,28 +63,28 @@ impl CodeWriter {
     }
 
     pub fn write_label(&mut self, label: &str) -> Result<()> {
-        writeln!(&mut self.file, "({})", label)?;
+        self.write(format!("({})", label).as_str())?;
         Ok(())
     }
 
     pub fn write_goto(&mut self, label: &str) -> Result<()> {
-        writeln!(&mut self.file, "@{}", label)?;
-        writeln!(&mut self.file, "0;JMP")?;
+        self.write(format!("@{}", label).as_str())?;
+        self.write("0;JMP")?;
         Ok(())
     }
 
     pub fn write_if(&mut self, label: &str) -> Result<()> {
         // decrement stack pointer
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M-1")?;
+        self.write("@SP")?;
+        self.write("M=M-1")?;
         // set memory address to stack pointer
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
+        self.write("@SP")?;
+        self.write("A=M")?;
         // store top of stack value in D register
-        writeln!(&mut self.file, "D=M")?;
+        self.write("D=M")?;
         // if D != 0 goto label
-        writeln!(&mut self.file, "@{}", label)?;
-        writeln!(&mut self.file, "D;JNE")?;
+        self.write(format!("@{}", label).as_str())?;
+        self.write("D;JNE")?;
         Ok(())
     }
 
@@ -94,68 +95,68 @@ impl CodeWriter {
             "@return-address{}",
             self.return_address_counter
         )?;
-        writeln!(&mut self.file, "D=A")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
-        writeln!(&mut self.file, "M=D")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M+1")?;
+        self.write("D=A")?;
+        self.write("@SP")?;
+        self.write("A=M")?;
+        self.write("M=D")?;
+        self.write("@SP")?;
+        self.write("M=M+1")?;
 
         // push LCL
-        writeln!(&mut self.file, "@LCL")?;
-        writeln!(&mut self.file, "D=M")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
-        writeln!(&mut self.file, "M=D")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M+1")?;
+        self.write("@LCL")?;
+        self.write("D=M")?;
+        self.write("@SP")?;
+        self.write("A=M")?;
+        self.write("M=D")?;
+        self.write("@SP")?;
+        self.write("M=M+1")?;
 
         // push ARG
-        writeln!(&mut self.file, "@ARG")?;
-        writeln!(&mut self.file, "D=M")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
-        writeln!(&mut self.file, "M=D")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M+1")?;
+        self.write("@ARG")?;
+        self.write("D=M")?;
+        self.write("@SP")?;
+        self.write("A=M")?;
+        self.write("M=D")?;
+        self.write("@SP")?;
+        self.write("M=M+1")?;
 
         // push THIS
-        writeln!(&mut self.file, "@THIS")?;
-        writeln!(&mut self.file, "D=M")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
-        writeln!(&mut self.file, "M=D")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M+1")?;
+        self.write("@THIS")?;
+        self.write("D=M")?;
+        self.write("@SP")?;
+        self.write("A=M")?;
+        self.write("M=D")?;
+        self.write("@SP")?;
+        self.write("M=M+1")?;
 
         // push THAT
-        writeln!(&mut self.file, "@THAT")?;
-        writeln!(&mut self.file, "D=M")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "A=M")?;
-        writeln!(&mut self.file, "M=D")?;
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "M=M+1")?;
+        self.write("@THAT")?;
+        self.write("D=M")?;
+        self.write("@SP")?;
+        self.write("A=M")?;
+        self.write("M=D")?;
+        self.write("@SP")?;
+        self.write("M=M+1")?;
 
         // ARG = SP-n-5
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "D=M")?;
-        writeln!(&mut self.file, "@{}", num_args)?;
-        writeln!(&mut self.file, "D=D-A")?;
-        writeln!(&mut self.file, "@5")?;
-        writeln!(&mut self.file, "D=D-A")?;
-        writeln!(&mut self.file, "@ARG")?;
-        writeln!(&mut self.file, "M=D")?;
+        self.write("@SP")?;
+        self.write("D=M")?;
+        self.write(format!("@{}", num_args).as_str())?;
+        self.write("D=D-A")?;
+        self.write("@5")?;
+        self.write("D=D-A")?;
+        self.write("@ARG")?;
+        self.write("M=D")?;
 
         // LCL = SP
-        writeln!(&mut self.file, "@SP")?;
-        writeln!(&mut self.file, "D=M")?;
-        writeln!(&mut self.file, "@LCL")?;
-        writeln!(&mut self.file, "M=D")?;
+        self.write("@SP")?;
+        self.write("D=M")?;
+        self.write("@LCL")?;
+        self.write("M=D")?;
 
         // goto f
-        writeln!(&mut self.file, "@{}", function_name)?;
-        writeln!(&mut self.file, "0;JMP")?;
+        self.write(format!("@{}", function_name).as_str())?;
+        self.write("0;JMP")?;
 
         // declare label for return-address
         writeln!(
@@ -174,17 +175,22 @@ impl CodeWriter {
 
     pub fn write_function(&mut self, function_name: &str, num_locals: i32) -> Result<()> {
         // declare function label
-        writeln!(&mut self.file, "({})", function_name)?;
+        self.write(format!("({})", function_name).as_str())?;
         // initialize with 0 for the number of local variables
         for _n in 0..num_locals {
-            writeln!(&mut self.file, "@0")?;
-            writeln!(&mut self.file, "D=A")?;
-            writeln!(&mut self.file, "@SP")?;
-            writeln!(&mut self.file, "A=M")?;
-            writeln!(&mut self.file, "M=D")?;
-            writeln!(&mut self.file, "@SP")?;
-            writeln!(&mut self.file, "M=M+1")?;
+            self.write("@0")?;
+            self.write("D=A")?;
+            self.write("@SP")?;
+            self.write("A=M")?;
+            self.write("M=D")?;
+            self.write("@SP")?;
+            self.write("M=M+1")?;
         }
+        Ok(())
+    }
+
+    fn write(&mut self, text: &str) -> Result<()> {
+        writeln!(&mut self.file, "{}", text)?;
         Ok(())
     }
 }
