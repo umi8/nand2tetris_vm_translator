@@ -4,6 +4,8 @@
 
 VM Translator for Nand2Tetris
 
+[![ci](https://github.com/umi8/nand2tetris_vm_translator/actions/workflows/ci.yml/badge.svg)](https://github.com/umi8/nand2tetris_vm_translator/actions/workflows/ci.yml)
+
 ## Usage
 
 ```shell
