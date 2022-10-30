@@ -5,6 +5,8 @@ use anyhow::Result;
 
 use crate::arithmetic_type::ArithmeticType;
 use crate::segment::Segment;
+use crate::CommandType::Push;
+use crate::Segment::Constant;
 use crate::{arithmetic_writer, push_pop_writer};
 use crate::{return_writer, CommandType};
 
@@ -167,13 +169,7 @@ impl CodeWriter {
         self.write_label(function_name)?;
         // initialize with 0 for the number of local variables
         for _n in 0..num_locals {
-            self.write("@0")?;
-            self.write("D=A")?;
-            self.write("@SP")?;
-            self.write("A=M")?;
-            self.write("M=D")?;
-            self.write("@SP")?;
-            self.write("M=M+1")?;
+            self.write_push_pop(Push, Constant, &0)?;
         }
         Ok(())
     }
