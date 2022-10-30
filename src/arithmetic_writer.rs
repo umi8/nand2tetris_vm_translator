@@ -4,9 +4,9 @@ use anyhow::Result;
 
 use crate::arithmetic_type::ArithmeticType;
 
-pub fn write(command: &ArithmeticType, label_number: i32) -> Result<String> {
+pub fn write(arithmetic_type: &ArithmeticType, label_number: i32) -> Result<String> {
     let mut s = String::new();
-    match command {
+    match arithmetic_type {
         ArithmeticType::Add => add(&mut s),
         ArithmeticType::Sub => sub(&mut s),
         ArithmeticType::Neg => neg(&mut s),
