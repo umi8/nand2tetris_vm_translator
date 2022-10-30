@@ -149,11 +149,10 @@ impl CodeWriter {
         self.write("M=D")?;
 
         // goto f
-        self.write(format!("@{}", function_name).as_str())?;
-        self.write("0;JMP")?;
+        self.write_goto(function_name)?;
 
         // declare label for return-address
-        writeln!(&mut self.file, "(return-address{})", self.label_counter)?;
+        self.write_label(format!("return-address{}", self.label_counter).as_str())?;
         self.label_counter += 1;
         Ok(())
     }
@@ -165,7 +164,7 @@ impl CodeWriter {
 
     pub fn write_function(&mut self, function_name: &str, num_locals: i32) -> Result<()> {
         // declare function label
-        self.write(format!("({})", function_name).as_str())?;
+        self.write_label(function_name)?;
         // initialize with 0 for the number of local variables
         for _n in 0..num_locals {
             self.write("@0")?;
