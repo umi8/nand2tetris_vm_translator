@@ -7,11 +7,11 @@ pub enum ArithmeticType {
     Add,
     Sub,
     Neg,
-    EQ,
-    GT,
-    LT,
+    Eq,
+    Gt,
+    Lt,
     And,
-    OR,
+    Or,
     Not,
 }
 
@@ -21,11 +21,11 @@ impl ArithmeticType {
             "add" => Ok(ArithmeticType::Add),
             "sub" => Ok(ArithmeticType::Sub),
             "neg" => Ok(ArithmeticType::Neg),
-            "eq" => Ok(ArithmeticType::EQ),
-            "gt" => Ok(ArithmeticType::GT),
-            "lt" => Ok(ArithmeticType::LT),
+            "eq" => Ok(ArithmeticType::Eq),
+            "gt" => Ok(ArithmeticType::Gt),
+            "lt" => Ok(ArithmeticType::Lt),
             "and" => Ok(ArithmeticType::And),
-            "or" => Ok(ArithmeticType::OR),
+            "or" => Ok(ArithmeticType::Or),
             "not" => Ok(ArithmeticType::Not),
             &_ => bail!(IllegalArgumentError),
         }
@@ -38,7 +38,7 @@ impl ArithmeticType {
     pub fn is_comparison_type(&self) -> bool {
         matches!(
             self,
-            ArithmeticType::EQ | ArithmeticType::GT | ArithmeticType::LT
+            ArithmeticType::Eq | ArithmeticType::Gt | ArithmeticType::Lt
         )
     }
 }
@@ -65,17 +65,17 @@ mod tests {
 
     #[test]
     fn return_eq_type() {
-        assert_eq!(EQ, ArithmeticType::from("eq").unwrap())
+        assert_eq!(Eq, ArithmeticType::from("eq").unwrap())
     }
 
     #[test]
     fn return_gt_type() {
-        assert_eq!(GT, ArithmeticType::from("gt").unwrap())
+        assert_eq!(Gt, ArithmeticType::from("gt").unwrap())
     }
 
     #[test]
     fn return_lt_type() {
-        assert_eq!(LT, ArithmeticType::from("lt").unwrap())
+        assert_eq!(Lt, ArithmeticType::from("lt").unwrap())
     }
 
     #[test]
@@ -85,7 +85,7 @@ mod tests {
 
     #[test]
     fn return_or_type() {
-        assert_eq!(OR, ArithmeticType::from("or").unwrap())
+        assert_eq!(Or, ArithmeticType::from("or").unwrap())
     }
 
     #[test]
