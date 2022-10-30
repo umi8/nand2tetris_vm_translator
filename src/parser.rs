@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-use anyhow::{bail, Result};
+use anyhow::{bail, Context, Result};
 use regex::Regex;
 
 use crate::command_type::CommandType;
@@ -22,22 +22,22 @@ impl Parser {
         })
     }
 
-    pub fn has_more_commands(&mut self) -> bool {
+    pub fn has_more_commands(&mut self) -> Result<bool> {
         loop {
             let mut buf = String::new();
             return match &self.reader.read_line(&mut buf) {
-                Ok(0) => false,
+                Ok(0) => Ok(false),
                 Ok(_) => {
-                    let re = Regex::new(r"//.*").unwrap();
+                    let re = Regex::new(r"//.*").context("Regular expression is invalid")?;
                     let comments_removed = re.replace_all(&buf, "");
                     let command = &comments_removed.trim();
                     if command.is_empty() {
                         continue;
                     }
-                    self.command = command.parse().unwrap();
-                    true
+                    self.command = command.parse().context("Failed to parse command")?;
+                    Ok(true)
                 }
-                Err(_) => false,
+                Err(_) => Ok(false),
             };
         }
     }
