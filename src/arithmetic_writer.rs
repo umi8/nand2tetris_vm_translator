@@ -2,7 +2,7 @@ use std::fmt::Write;
 
 use anyhow::Result;
 
-use crate::arithmetic_type::ArithmeticType::{Add, And, Neg, Not, Sub, EQ, GT, LT, OR};
+use crate::arithmetic_type::ArithmeticType::{Add, And, Eq, Gt, Lt, Neg, Not, Or, Sub};
 use crate::ArithmeticType;
 
 pub fn write(arithmetic_type: &ArithmeticType, label_number: i32) -> Result<String> {
@@ -11,11 +11,11 @@ pub fn write(arithmetic_type: &ArithmeticType, label_number: i32) -> Result<Stri
         Add => add(&mut s),
         Sub => sub(&mut s),
         Neg => neg(&mut s),
-        EQ => eq(&mut s, label_number),
-        GT => gt(&mut s, label_number),
-        LT => lt(&mut s, label_number),
+        Eq => eq(&mut s, label_number),
+        Gt => gt(&mut s, label_number),
+        Lt => lt(&mut s, label_number),
         And => and(&mut s),
-        OR => or(&mut s),
+        Or => or(&mut s),
         Not => not(&mut s),
     }?;
     Ok(s)
