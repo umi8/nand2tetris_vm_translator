@@ -2,21 +2,20 @@ use std::fmt::Write;
 
 use anyhow::Result;
 
-use crate::arithmetic_type::ArithmeticType::{Add, And, Eq, Gt, Lt, Neg, Not, Or, Sub};
 use crate::ArithmeticType;
 
 pub fn write(arithmetic_type: &ArithmeticType, label_number: i32) -> Result<String> {
     let mut s = String::new();
     match arithmetic_type {
-        Add => add(&mut s),
-        Sub => sub(&mut s),
-        Neg => neg(&mut s),
-        Eq => eq(&mut s, label_number),
-        Gt => gt(&mut s, label_number),
-        Lt => lt(&mut s, label_number),
-        And => and(&mut s),
-        Or => or(&mut s),
-        Not => not(&mut s),
+        ArithmeticType::Add => add(&mut s),
+        ArithmeticType::Sub => sub(&mut s),
+        ArithmeticType::Neg => neg(&mut s),
+        ArithmeticType::Eq => eq(&mut s, label_number),
+        ArithmeticType::Gt => gt(&mut s, label_number),
+        ArithmeticType::Lt => lt(&mut s, label_number),
+        ArithmeticType::And => and(&mut s),
+        ArithmeticType::Or => or(&mut s),
+        ArithmeticType::Not => not(&mut s),
     }?;
     Ok(s)
 }
