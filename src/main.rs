@@ -78,7 +78,7 @@ fn create_output_file_name(path: &Path) -> String {
 
 fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<()> {
     let mut parser = VmParser::new(file_path)?;
-    while parser.has_more_commands() {
+    while parser.has_more_commands()? {
         match parser.command_type()? {
             CommandType::Arithmetic => {
                 code_writer.write_arithmetic(ArithmeticType::from(parser.arg1()?)?)?
