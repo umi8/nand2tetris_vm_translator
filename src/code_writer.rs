@@ -10,8 +10,7 @@ use crate::{return_writer, CommandType};
 
 pub struct CodeWriter {
     file: File,
-    comparison_counter: i32,
-    return_address_counter: i32,
+    label_counter: i32,
 }
 
 impl CodeWriter {
@@ -19,8 +18,7 @@ impl CodeWriter {
         let out = File::create(file_path)?;
         Ok(CodeWriter {
             file: out,
-            comparison_counter: 0,
-            return_address_counter: 0,
+            label_counter: 0,
         })
     }
 
@@ -40,10 +38,10 @@ impl CodeWriter {
         write!(
             &mut self.file,
             "{}",
-            arithmetic_writer::write(&arithmetic_command, self.comparison_counter)?
+            arithmetic_writer::write(&arithmetic_command, self.label_counter)?
         )?;
         if arithmetic_command.is_comparison_type() {
-            self.comparison_counter += 1;
+            self.label_counter += 1;
         }
         Ok(())
     }
@@ -90,11 +88,7 @@ impl CodeWriter {
 
     pub fn write_call(&mut self, function_name: &str, num_args: i32) -> Result<()> {
         // push return-address
-        writeln!(
-            &mut self.file,
-            "@return-address{}",
-            self.return_address_counter
-        )?;
+        writeln!(&mut self.file, "@return-address{}", self.label_counter)?;
         self.write("D=A")?;
         self.write("@SP")?;
         self.write("A=M")?;
@@ -159,12 +153,8 @@ impl CodeWriter {
         self.write("0;JMP")?;
 
         // declare label for return-address
-        writeln!(
-            &mut self.file,
-            "(return-address{})",
-            self.return_address_counter
-        )?;
-        self.return_address_counter += 1;
+        writeln!(&mut self.file, "(return-address{})", self.label_counter)?;
+        self.label_counter += 1;
         Ok(())
     }
 
