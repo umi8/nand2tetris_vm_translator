@@ -1,12 +1,13 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use anyhow::Result;
+use clap::Parser;
 use walkdir::{DirEntry, WalkDir};
 
 use crate::arithmetic_type::ArithmeticType;
 use crate::code_writer::CodeWriter;
 use crate::command_type::CommandType;
-use crate::parser::Parser;
+use crate::parser::Parser as VmParser;
 use crate::segment::Segment;
 
 mod arithmetic_type;
@@ -19,17 +20,25 @@ mod push_pop_writer;
 mod return_writer;
 mod segment;
 
+/// Nand2Tetris VM Translator
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// Sets a path to be translated
+    #[arg(short, long, value_name = "PATH")]
+    path: PathBuf,
+}
+
 fn main() -> Result<()> {
-    let arg = "vm";
-    let path = Path::new(arg);
-    let files: Vec<DirEntry> = extract_files_from(path);
+    let args = Args::parse();
+    let files: Vec<DirEntry> = extract_files_from(args.path.as_path());
 
     if files.is_empty() {
         println!("The translation target doesn't exist.");
         return Ok(());
     }
 
-    let output_file_name = create_output_file_name(path);
+    let output_file_name = create_output_file_name(args.path.as_path());
 
     let mut code_writer = CodeWriter::new(&output_file_name)?;
     code_writer.write_init()?;
@@ -68,7 +77,7 @@ fn create_output_file_name(path: &Path) -> String {
 }
 
 fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<()> {
-    let mut parser = Parser::new(file_path)?;
+    let mut parser = VmParser::new(file_path)?;
     while parser.has_more_commands() {
         match parser.command_type()? {
             CommandType::Arithmetic => {
