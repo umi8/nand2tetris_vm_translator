@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::Parser;
 use walkdir::{DirEntry, WalkDir};
 
@@ -77,8 +77,11 @@ fn create_output_file_name(path: &Path) -> String {
 }
 
 fn parse(code_writer: &mut CodeWriter, file: DirEntry) -> Result<()> {
-    let file_path = file.path().to_str().unwrap();
-    let mut parser = VmParser::new(file_path)?;
+    let mut parser = VmParser::new(
+        file.path()
+            .to_str()
+            .context("Failed to convert path to &str.")?,
+    )?;
     while parser.has_more_commands()? {
         match parser.command_type()? {
             CommandType::Arithmetic => {
@@ -88,7 +91,10 @@ fn parse(code_writer: &mut CodeWriter, file: DirEntry) -> Result<()> {
                 parser.command_type()?,
                 Segment::from(parser.arg1()?)?,
                 &parser.arg2()?,
-                file.file_name().to_str().unwrap().to_string(),
+                file.file_name()
+                    .to_str()
+                    .context("Failed to convert to DirEntry to &str.")?
+                    .to_string(),
             )?,
             CommandType::Label => code_writer.write_label(parser.arg1()?)?,
             CommandType::IfGoto => code_writer.write_if(parser.arg1()?)?,
