@@ -43,7 +43,7 @@ fn main() -> Result<()> {
     let mut code_writer = CodeWriter::new(&output_file_name)?;
     code_writer.write_init()?;
     for file in files {
-        parse(&mut code_writer, file.path().to_str().unwrap())?;
+        parse(&mut code_writer, file)?;
     }
 
     println!("File translation succeeded: {}", output_file_name);
@@ -76,7 +76,8 @@ fn create_output_file_name(path: &Path) -> String {
     format!("{}/{}.asm", dir, dir_name)
 }
 
-fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<()> {
+fn parse(code_writer: &mut CodeWriter, file: DirEntry) -> Result<()> {
+    let file_path = file.path().to_str().unwrap();
     let mut parser = VmParser::new(file_path)?;
     while parser.has_more_commands()? {
         match parser.command_type()? {
@@ -87,6 +88,7 @@ fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<()> {
                 parser.command_type()?,
                 Segment::from(parser.arg1()?)?,
                 &parser.arg2()?,
+                file.file_name().to_str().unwrap().to_string(),
             )?,
             CommandType::Label => code_writer.write_label(parser.arg1()?)?,
             CommandType::IfGoto => code_writer.write_if(parser.arg1()?)?,

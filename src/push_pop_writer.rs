@@ -5,19 +5,24 @@ use anyhow::Result;
 use crate::segment::Segment;
 use crate::CommandType;
 
-pub fn write(command: CommandType, segment: Segment, index: &i32) -> Result<String> {
+pub fn write(
+    command: CommandType,
+    segment: Segment,
+    index: &i32,
+    file_name: String,
+) -> Result<String> {
     let mut s = String::new();
     if command == CommandType::Push {
-        push(&mut s, segment, index)?;
+        push(&mut s, segment, index, file_name)?;
     } else if command == CommandType::Pop {
-        pop(&mut s, segment, index)?;
+        pop(&mut s, segment, index, file_name)?;
     }
     Ok(s)
 }
 
-fn push(s: &mut String, segment: Segment, index: &i32) -> Result<()> {
+fn push(s: &mut String, segment: Segment, index: &i32, file_name: String) -> Result<()> {
     // segment[index]をDレジスタに入れる
-    store_index_of_segment_in_d_register(s, segment, index)?;
+    store_index_of_segment_in_d_register(s, segment, index, file_name)?;
     // SPをAレジスタに入れる
     set_memory_address_to_stack_pointer(s)?;
     // pushする
@@ -27,9 +32,9 @@ fn push(s: &mut String, segment: Segment, index: &i32) -> Result<()> {
     Ok(())
 }
 
-fn pop(s: &mut String, segment: Segment, index: &i32) -> Result<()> {
+fn pop(s: &mut String, segment: Segment, index: &i32, file_name: String) -> Result<()> {
     // pop先のアドレスをDレジスタに入れる
-    store_dest_address_in_d_register(s, segment, index)?;
+    store_dest_address_in_d_register(s, segment, index, file_name)?;
     // pop先のアドレスをR13に退避する
     writeln!(s, "@R13")?;
     writeln!(s, "M=D")?;
@@ -47,6 +52,7 @@ fn store_index_of_segment_in_d_register(
     s: &mut String,
     segment: Segment,
     index: &i32,
+    file_name: String,
 ) -> Result<()> {
     match segment {
         Segment::Constant => {
@@ -102,18 +108,19 @@ fn store_index_of_segment_in_d_register(
             writeln!(s, "D=M")?;
         }
         Segment::Static => {
-            writeln!(s, "@16")?;
-            writeln!(s, "D=A")?;
-            writeln!(s, "@{}", index)?;
-            writeln!(s, "D=D+A")?;
-            writeln!(s, "A=D")?;
+            writeln!(s, "@{}.{}", file_name, index)?;
             writeln!(s, "D=M")?;
         }
     }
     Ok(())
 }
 
-fn store_dest_address_in_d_register(s: &mut String, segment: Segment, index: &i32) -> Result<()> {
+fn store_dest_address_in_d_register(
+    s: &mut String,
+    segment: Segment,
+    index: &i32,
+    file_name: String,
+) -> Result<()> {
     match segment {
         Segment::Constant => {} // do nothing
         Segment::Local => {
@@ -155,10 +162,8 @@ fn store_dest_address_in_d_register(s: &mut String, segment: Segment, index: &i3
             writeln!(s, "D=A")?;
         }
         Segment::Static => {
-            writeln!(s, "@16")?;
+            writeln!(s, "@{}.{}", file_name, index)?;
             writeln!(s, "D=A")?;
-            writeln!(s, "@{}", index)?;
-            writeln!(s, "D=D+A")?;
         }
     }
     Ok(())
