@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::Parser;
 use walkdir::{DirEntry, WalkDir};
 
@@ -43,7 +43,7 @@ fn main() -> Result<()> {
     let mut code_writer = CodeWriter::new(&output_file_name)?;
     code_writer.write_init()?;
     for file in files {
-        parse(&mut code_writer, file.path().to_str().unwrap())?;
+        parse(&mut code_writer, file)?;
     }
 
     println!("File translation succeeded: {}", output_file_name);
@@ -76,8 +76,12 @@ fn create_output_file_name(path: &Path) -> String {
     format!("{}/{}.asm", dir, dir_name)
 }
 
-fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<()> {
-    let mut parser = VmParser::new(file_path)?;
+fn parse(code_writer: &mut CodeWriter, file: DirEntry) -> Result<()> {
+    let mut parser = VmParser::new(
+        file.path()
+            .to_str()
+            .context("Failed to convert path to &str.")?,
+    )?;
     while parser.has_more_commands()? {
         match parser.command_type()? {
             CommandType::Arithmetic => {
@@ -87,6 +91,10 @@ fn parse(code_writer: &mut CodeWriter, file_path: &str) -> Result<()> {
                 parser.command_type()?,
                 Segment::from(parser.arg1()?)?,
                 &parser.arg2()?,
+                file.file_name()
+                    .to_str()
+                    .context("Failed to convert to DirEntry to &str.")?
+                    .to_string(),
             )?,
             CommandType::Label => code_writer.write_label(parser.arg1()?)?,
             CommandType::IfGoto => code_writer.write_if(parser.arg1()?)?,

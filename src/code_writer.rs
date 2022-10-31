@@ -53,11 +53,12 @@ impl CodeWriter {
         command: CommandType,
         segment: Segment,
         index: &i32,
+        file_name: String,
     ) -> Result<()> {
         write!(
             &mut self.file,
             "{}",
-            push_pop_writer::write(command, segment, index)?
+            push_pop_writer::write(command, segment, index, file_name)?
         )?;
         Ok(())
     }
@@ -169,7 +170,7 @@ impl CodeWriter {
         self.write_label(function_name)?;
         // initialize with 0 for the number of local variables
         for _n in 0..num_locals {
-            self.write_push_pop(Push, Constant, &0)?;
+            self.write_push_pop(Push, Constant, &0, String::new())?;
         }
         Ok(())
     }
